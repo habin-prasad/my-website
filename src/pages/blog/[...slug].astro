@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  console.log('COLLECTION SIZE:', posts.length);
+  console.log('POSTS:', posts.map(p => p.id));
+  return posts.filter(p => !p.data.draft).map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+console.log('RENDERING POST:', post?.id);
+const { Content } = await render(post);
+---
+<html>
+<body>
+  <nav><a href="/">Home</a> | <a href="/about">About</a> | <a href="/blog">Blog</a> | <a href="/projects">Projects</a></nav>
+  <h1>{post.data.title}</h1>
+  <small>{post.data.pubDate.toDateString()}</small>
+  <hr />
+  <Content />
+</body>   
+</html>   

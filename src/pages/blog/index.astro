@@ -1,34 +1,26 @@
 ---
 import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog')).filter(p => !p.data.draft).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-console.log('POSTS DEBUG:', JSON.stringify(posts.map(p => ({ id: p.id, slug: p.slug, collection: p.collection, body: p.body ? 'has body' : 'no body', filePath: p.filePath })), null, 2));
 ---
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name | Home</title>
+  <title>Blog | Your Name</title>
   <style>
     body { font-family: system-ui, sans-serif; max-width: 700px; margin: 0 auto; padding: 2rem; }
-    nav a { margin-right: 1rem; }
+    article { margin-bottom: 2rem; }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/blog">Blog</a>
-    <a href="/projects">Projects</a>
-  </nav>
+  <nav><a href="/">Home</a> | <a href="/about">About</a> | <a href="/blog">Blog</a> | <a href="/projects">Projects</a></nav>
   <h1>Blog</h1>
   {posts.map(post => (
     <article>
-      <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a>   </h2>
+      <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
       <p>{post.data.description}</p>
       <small>{post.data.pubDate.toDateString()}</small>
     </article>
   ))}
-  <h1>Hello, I'm Habin Prasad</h1>
-  <p>I'm a Software Test Engineer profession. This is my corner of the internet.</p>
 </body>
 </html>   
