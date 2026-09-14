@@ -1,0 +1,43 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  description?: string;
+}
+
+const { title, subtitle, description } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <div class="page-header">
+    <h1 class="page-title">{title}</h1>
+    {subtitle && <p class="page-subtitle">{subtitle}</p>}
+  </div>
+
+  <!-- Reusable Glass Card Wrapper for all generic pages -->
+  <div class="glass-card page-body">
+    <slot />
+  </div>
+</Base>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+  }
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin: 0 0 0.5rem 0;
+  }
+  .page-subtitle {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .page-body {
+    padding: 2rem;
+  }
+</style>

@@ -1,26 +1,42 @@
 ---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
 import { getCollection } from 'astro:content';
-const posts = (await getCollection('blog')).filter(p => !p.data.draft).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const posts = await getCollection('blog');
+const publishedPosts = posts
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog | Your Name</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 0 auto; padding: 2rem; }
-    article { margin-bottom: 2rem; }
-  </style>
-</head>
-<body>
-  <nav><a href="/">Home</a> | <a href="/about">About</a> | <a href="/blog">Blog</a> | <a href="/projects">Projects</a></nav>
-  <h1>Blog</h1>
-  {posts.map(post => (
-    <article>
-      <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
-      <p>{post.data.description}</p>
-      <small>{post.data.pubDate.toDateString()}</small>
-    </article>
-  ))}
-</body>
-</html>   
+
+<Base title="Blog">
+  <section class="blog-header">
+    <h1>Engineering Journal</h1>
+    <p class="subtitle">Notes on software engineering, cloud architecture, and web systems.</p>
+  </section>
+
+  <div class="posts-list">
+    {publishedPosts.map(post => (
+      <PostCard
+        title={post.data.title}
+        description={post.data.description}
+        pubDate={post.data.pubDate}
+        slug={post.slug ?? post.id.replace(/\.[^/.]+$/, "")}
+        tags={post.data.tags}
+        body={post.body}
+      />
+    ))}
+  </div>
+</Base>
+
+<style>
+  .blog-header { margin-bottom: 2rem; }
+  .blog-header h1 { font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0; }
+  .subtitle { color: var(--muted); font-size: 1.05rem; margin: 0; }
+  
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+
+const articles = [
+  {
+    title: "Optimizing Web Vitals for Static Astro Applications",
+    publisher: "Dev.to",
+    date: "2026-05-10",
+    url: "https://dev.to"
+  },
+  {
+    title: "Architecting Low-Cost Cloud Infrastructure on Cloudflare",
+    publisher: "HackerNoon",
+    date: "2026-02-18",
+    url: "https://hackernoon.com"
+  }
+];
+---
+
+<Base title="External Writing">
+  <section class="page-header">
+    <h1>External Publications</h1>
+    <p class="subtitle">Articles, guest posts, and technical guides published across third-party platforms.</p>
+  </section>
+
+  <div class="writing-list">
+    {articles.map(article => (
+      <a href={article.url} target="_blank" rel="noopener noreferrer" class="glass-card article-link">
+        <div class="article-info">
+          <h3>{article.title}</h3>
+          <span class="publisher">{article.publisher}</span>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+      </a>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 { font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0; }
+  .subtitle { color: var(--muted); font-size: 1.05rem; margin: 0; }
+
+  .writing-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .article-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .article-info h3 { margin: 0 0 0.25rem 0; font-size: 1.1rem; color: var(--text); }
+  .publisher { font-size: 0.85rem; color: var(--accent); font-family: var(--font-mono); }
+
+  .article-link svg { color: var(--muted); transition: transform 0.2s, color 0.2s; }
+  .article-link:hover svg { color: var(--accent); transform: translate(2px, -2px); }
+</style>

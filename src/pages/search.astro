@@ -1,0 +1,19 @@
+---
+// src/pages/search.astro
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Search">
+  <h1>Search Articles</h1>
+
+  <!-- Pagefind Component UI elements -->
+  <pagefind-modal-trigger data-open>
+    <button type="button">Search site (Ctrl+K)</button>
+  </pagefind-modal-trigger>
+
+  <pagefind-modal></pagefind-modal>
+
+  <!-- Load 1.5.0 Component UI scripts and styles -->
+  <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
+  <script src="/pagefind/pagefind-component-ui.js" is:inline></script>
+</Base>
