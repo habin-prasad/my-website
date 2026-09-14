@@ -10,5 +10,8 @@
 	},
 	"observability": {
 		"enabled": true
+	},
+	"vars": {
+  		"TURSO_HTTP_URL": "https://portfolio-db-tesla163.aws-ap-south-1.turso.io"
 	}
 }
