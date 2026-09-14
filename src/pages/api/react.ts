@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ request }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-
+  
   try {
     const rows = await queryDb<{ count: number }>({
       sql: 'SELECT count FROM post_reactions WHERE slug = ?',
@@ -44,8 +44,6 @@ export const GET: APIRoute = async ({ request }) => {
 // ---------------------------------------------------------------------------
 export const POST: APIRoute = async ({ request }) => {
   const clientIP = getClientIP(request);
-
-  // Rate Limiting: Max 5 claps per 60s per IP
   const limiter = rateLimit(clientIP, {
     windowMs: 60 * 1000,
     maxRequests: 5,

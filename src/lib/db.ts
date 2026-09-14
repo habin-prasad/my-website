@@ -9,19 +9,20 @@ interface TursoResponseCell {
 }
 
 export async function queryDb<T = Record<string, any>>(stmt: TursoStmt): Promise<T[]> {
-  const rawUrl = import.meta.env.TURSO_HTTP_URL;
-  const token = import.meta.env.TURSO_AUTH_TOKEN;
+  // Resolve runtime env without triggering Astro's deprecation warning on locals
+  const cfEnv = (globalThis as any).process?.env || (globalThis as any).env || {};
+  
+  const rawUrl = cfEnv.TURSO_HTTP_URL || import.meta.env.TURSO_HTTP_URL;
+  const token = cfEnv.TURSO_AUTH_TOKEN || import.meta.env.TURSO_AUTH_TOKEN;
 
   if (!rawUrl || !token) {
-    console.error('❌ Turso Configuration Error: TURSO_HTTP_URL or TURSO_AUTH_TOKEN missing');
+    console.error('❌ Turso Error: TURSO_HTTP_URL or TURSO_AUTH_TOKEN missing');
     throw new Error('Database credentials missing');
   }
 
-  // Target the v2 pipeline endpoint
   const baseUrl = rawUrl.replace(/\/v[12]\/pipeline\/?$/, '').replace(/\/$/, '');
   const endpoint = `${baseUrl}/v2/pipeline`;
 
-  // Format arguments into Turso typed parameters
   const formattedArgs = (stmt.args || []).map((arg) => {
     if (typeof arg === 'number') return { type: 'float', value: arg };
     if (typeof arg === 'boolean') return { type: 'integer', value: arg ? 1 : 0 };

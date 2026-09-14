@@ -1,0 +1,63 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+
+<PageLayout title="Contact">
+  <!-- 1. Load Cloudflare Turnstile JS -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <form id="contact-form" class="space-y-4">
+    <div>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required class="border w-full p-2" />
+    </div>
+
+    <div>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required class="border w-full p-2" />
+    </div>
+
+    <div>
+      <label for="message">Message</label>
+      <textarea id="message" name="message" required class="border w-full p-2"></textarea>
+    </div>
+
+    <!-- 2. Turnstile Widget Container -->
+    <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+
+    <button type="submit" id="submit-btn" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Send Message
+    </button>
+  </form>
+</PageLayout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    // Extract Turnstile token generated automatically in the form
+    if (!payload['cf-turnstile-response']) {
+      alert('Please complete the CAPTCHA verification.');
+      return;
+    }
+
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      alert('Message sent successfully!');
+      form.reset();
+    } else {
+      alert('Verification failed or server error occurred.');
+    }
+  });
+</script>
