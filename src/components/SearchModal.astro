@@ -1,0 +1,191 @@
+---
+---
+
+<div id="search-modal" class="search-modal-backdrop" style="display: none;" aria-hidden="true">
+  <div class="search-modal-container glass-card">
+    <div class="search-modal-header">
+      <span class="modal-label">Search & Actions</span>
+      <button id="close-search-btn" class="close-btn" aria-label="Close search">&times;</button>
+    </div>
+    
+    <!-- Pagefind UI attaches here -->
+    <div id="pagefind-search"></div>
+
+    <!-- Command Palette Quick Navigation -->
+    <div class="quick-actions">
+      <div class="quick-actions-title">Quick Actions</div>
+      <div class="actions-grid">
+        <a href="/" class="action-item"><kbd>/</kbd> Home</a>
+        <a href="/blog" class="action-item"><kbd>/blog</kbd> Journal</a>
+        <a href="/projects" class="action-item"><kbd>/projects</kbd> Projects</a>
+        <button id="copy-rss-action" class="action-item"><kbd>RSS</kbd> Copy Feed URL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Load Pagefind JS directly as a static file (prevents Vite import error) -->
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+
+<script>
+  function initSearchModal() {
+    const modal = document.getElementById('search-modal');
+    const closeBtn = document.getElementById('close-search-btn');
+    const copyRssBtn = document.getElementById('copy-rss-action');
+    let pagefindInitialized = false;
+
+    function mountPagefindUI() {
+      if (pagefindInitialized) return;
+
+      // Check if window.PagefindUI exists (loaded by the is:inline script above)
+      // @ts-ignore
+      if (typeof PagefindUI !== 'undefined') {
+        // @ts-ignore
+        new PagefindUI({
+          element: '#pagefind-search',
+          showSubresults: true,
+          showImages: false,
+          resetStyles: false
+        });
+        pagefindInitialized = true;
+      }
+    }
+
+    function openModal() {
+      if (!modal) return;
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      
+      mountPagefindUI();
+
+      setTimeout(() => {
+        const input = modal.querySelector('input');
+        if (input) input.focus();
+      }, 50);
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Window event listener triggered by SearchTrigger component & Cmd+K
+    window.addEventListener('open-search', openModal);
+
+    // Fixed Cmd+K / Ctrl+K listener
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (modal?.style.display === 'flex') {
+          closeModal();
+        } else {
+          openModal();
+        }
+      }
+      if (e.key === 'Escape') closeModal();
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    copyRssBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(`${window.location.origin}/rss.xml`);
+      copyRssBtn.textContent = 'Copied!';
+      setTimeout(() => {
+        copyRssBtn.innerHTML = '<kbd>RSS</kbd> Copy Feed URL';
+      }, 2000);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSearchModal);
+  document.addEventListener('astro:page-load', initSearchModal);
+</script>
+
+<style>
+  .search-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(12px);
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+  }
+
+  .search-modal-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 1rem;
+    padding: 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--surface-border-accent);
+  }
+
+  .search-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .modal-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .quick-actions {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--surface-border);
+  }
+
+  .quick-actions-title {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .action-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.825rem;
+    border: 1px solid var(--surface-border);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .action-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

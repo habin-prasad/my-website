@@ -1,0 +1,28 @@
+<div id="progress-bar" class="progress-bar"></div>
+
+<script>
+  function updateProgress() {
+    const bar = document.getElementById('progress-bar');
+    if (!bar) return;
+
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+    bar.style.width = `${progress}%`;
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  document.addEventListener('astro:page-load', updateProgress);
+</script>
+
+<style>
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-purple) 100%);
+    z-index: 100;
+    transition: width 0.1s ease-out;
+  }
+</style>

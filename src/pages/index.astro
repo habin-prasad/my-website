@@ -1,34 +1,152 @@
 ---
+// src/pages/blog/index.astro
+import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-const posts = (await getCollection('blog')).filter(p => !p.data.draft).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-console.log('POSTS DEBUG:', JSON.stringify(posts.map(p => ({ id: p.id, slug: p.slug, collection: p.collection, body: p.body ? 'has body' : 'no body', filePath: p.filePath })), null, 2));
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name | Home</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 0 auto; padding: 2rem; }
-    nav a { margin-right: 1rem; }
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/blog">Blog</a>
-    <a href="/projects">Projects</a>
-  </nav>
-  <h1>Blog</h1>
-  {posts.map(post => (
-    <article>
-      <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a>   </h2>
-      <p>{post.data.description}</p>
-      <small>{post.data.pubDate.toDateString()}</small>
-    </article>
-  ))}
-  <h1>Hello, I'm Habin Prasad</h1>
-  <p>I'm a Software Test Engineer profession. This is my corner of the internet.</p>
-</body>
-</html>   
+
+<Base title="Software Engineer & Infrastructure Enthusiast">
+  <section class="hero-section">
+    <div class="status-badge">
+      <span class="status-dot"></span> Available for technical consulting
+    </div>
+
+    <h1 class="hero-title">
+      Building high-scale systems & <br />
+      <span class="gradient-text">crafting clean web platforms.</span>
+    </h1>
+
+    <p class="hero-bio">
+      Senior Software Engineer focusing on distributed architecture, frontend performance, and cloud infrastructure.
+    </p>
+
+    <div class="hero-actions">
+      <a href="/blog" class="btn-primary">Read Articles</a>
+      <a href="/projects" class="btn-secondary">View Projects</a>
+    </div>
+  </section>
+
+  <div class="post-grid">
+    {posts.map(post => (
+      <a href={`/blog/${post.id}/`} class="post-card">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        </time>
+        <h2>{post.data.title}</h2>
+        <p>{post.data.description}</p>
+        {post.data.tags && (
+          <div class="tag-list">
+            {post.data.tags.map(tag => <span class="tag">#{tag}</span>)}
+          </div>
+        )}
+      </a>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .blog-header { margin-bottom: 2.5rem; }
+  .blog-header h1 { font-size: 2.25rem; margin-bottom: 0.5rem; font-weight: 700; }
+  .subtitle { color: var(--muted); font-size: 1.1rem; }
+  
+  .post-grid { display: flex; flex-direction: column; gap: 1.25rem; }
+  
+  .post-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .post-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+  time { font-size: 0.825rem; color: var(--accent); font-weight: 600; font-family: var(--font-mono); }
+  h2 { font-size: 1.25rem; margin: 0.4rem 0; font-weight: 600; color: var(--text); }
+  p { color: var(--muted); font-size: 0.95rem; margin: 0; }
+  .tag-list { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .tag { font-size: 0.75rem; color: var(--muted); font-family: var(--font-mono); }
+
+  .hero-section {
+    padding: 2rem 0 3rem 0;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+    margin-bottom: 1.5rem;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    margin: 0 0 1.25rem 0;
+    color: #ffffff;
+  }
+
+  .hero-bio {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.85rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: #ffffff;
+    color: #0b0f19;
+  }
+
+  .btn-primary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--surface-border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--surface-border-accent);
+    transform: translateY(-1px);
+  }
+</style>

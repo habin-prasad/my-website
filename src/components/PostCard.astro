@@ -1,0 +1,113 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  slug: string;
+  tags?: string[];
+  body?: string; // Optional: used to calculate reading time
+}
+
+const { title, description, pubDate, slug, tags = [], body = '' } = Astro.props;
+
+// Calculate estimated reading time (approx 200 words per minute)
+const words = body ? body.split(/\s+/).length : 0;
+const readingTime = words > 0 ? `${Math.ceil(words / 200)} min read` : null;
+
+// Format date nicely (e.g., "Sep 14, 2026")
+const formattedDate = pubDate.toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+});
+---
+
+<a href={`/blog/${slug}/`} class="glass-card post-card">
+  <div class="card-meta">
+    <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+    {readingTime && <span class="dot-separator">•</span>}
+    {readingTime && <span class="reading-time">{readingTime}</span>}
+  </div>
+
+  <h2 class="card-title">{title}</h2>
+  <p class="card-desc">{description}</p>
+
+  {tags.length > 0 && (
+    <div class="card-tags">
+      {tags.map(tag => (
+        <span class="tag">#{tag}</span>
+      ))}
+    </div>
+  )}
+</a>
+
+<style>
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .dot-separator {
+    color: var(--muted);
+  }
+
+  .reading-time {
+    color: var(--muted);
+  }
+
+  .card-title {
+    margin: 0.2rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.35;
+    transition: color 0.15s ease;
+  }
+
+  .post-card:hover .card-title {
+    color: var(--accent);
+  }
+
+  .card-desc {
+    margin: 0;
+    font-size: 0.925rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--surface-border);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+  }
+
+  .post-card:hover .tag {
+    border-color: rgba(56, 189, 248, 0.3);
+    color: var(--text);
+  }
+</style>

@@ -1,0 +1,599 @@
+:root {
+  --bg: #0b0f19;
+  --surface: rgba(17, 24, 39, 0.65);
+  --surface-hover: rgba(31, 41, 55, 0.8);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --surface-border-accent: rgba(56, 189, 248, 0.3);
+  
+  --text: #f3f4f6;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-purple: #8b5cf6;
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --max-w: 768px;
+  --radius: 12px;
+}
+
+/* Reset & Layout */
+*, *::before, *::after { box-sizing: border-box; }
+/* Base Body with Dual Ambient Radial Glows & Grid Pattern */
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: 
+    /* Ambient Glow 1: Cyan Spotlight Top Center */
+    radial-gradient(1000px circle at 50% -20%, rgba(56, 189, 248, 0.12), transparent 70%),
+    /* Ambient Glow 2: Purple Glow Bottom Right */
+    radial-gradient(800px circle at 85% 60%, rgba(139, 92, 246, 0.08), transparent 65%),
+    /* Subtle Grid Blueprint Overlay */
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header & Glassmorphic Navigation Bar */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(11, 15, 25, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.nav {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brand-accent { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text);
+}
+
+/* Glassmorphic Search Trigger Pill */
+.search-trigger button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--surface-border);
+  color: var(--muted);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.search-trigger button:hover {
+  border-color: var(--surface-border-accent);
+  color: var(--text);
+  background: rgba(30, 41, 59, 0.8);
+}
+
+kbd {
+  background: rgba(11, 15, 25, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+}
+
+/* Reusable Glass Card Utility */
+.glass-card {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--surface-border-accent);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Gradient Text Effect Utility */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Main Container & Footer */
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.footer {
+  border-top: 1px solid var(--surface-border);
+  padding: 2rem 1.5rem;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 0.825rem;
+  text-align: center;
+}
+
+/* Pagefind Modal Dark Overrides */
+:root {
+  --pagefind-ui-background: var(--surface);
+  --pagefind-ui-text: var(--text);
+  --pagefind-ui-border: var(--surface-border);
+  --pagefind-ui-primary: var(--accent);
+  --pagefind-ui-font: var(--font-sans);
+}
+/* ==========================================================================
+   Markdown Post Content & Typography (.post-content)
+   ========================================================================== */
+
+.post-content {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #e2e8f0; /* Crisp readable body text */
+}
+
+/* Headings */
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2.25rem;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.015em;
+}
+
+.post-content h1 { font-size: 1.85rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 0.5rem; }
+.post-content h2 { font-size: 1.5rem; }
+.post-content h3 { font-size: 1.25rem; }
+
+/* Paragraphs & Links */
+.post-content p {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.post-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(56, 189, 248, 0.4);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+
+.post-content a:hover {
+  color: #7dd3fc;
+  text-decoration-color: var(--accent);
+}
+
+/* Lists */
+.post-content ul,
+.post-content ol {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.post-content li {
+  margin-bottom: 0.4rem;
+}
+
+.post-content li::marker {
+  color: var(--accent);
+}
+
+/* Blockquotes */
+.post-content blockquote {
+  margin: 1.75rem 0;
+  padding: 0.85rem 1.25rem;
+  background: rgba(17, 24, 39, 0.6);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: #cbd5e1;
+  font-style: italic;
+}
+
+.post-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline Code Elements */
+.post-content :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #38bdf8;
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Astro Code Blocks & Syntax Highlighting (Shiki / Prism Output) */
+.post-content pre {
+  margin: 1.75rem 0;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  background-color: #0d1117 !important;
+  border: 1px solid var(--surface-border);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.post-content pre code {
+  background: none !important;
+  padding: 0 !important;
+  border: none !important;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Tables */
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.75rem 0;
+  font-size: 0.95rem;
+}
+
+.post-content th,
+.post-content td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.post-content th {
+  background-color: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.post-content tr:hover {
+  background-color: rgba(31, 41, 55, 0.4);
+}
+
+/* Horizontal Rules */
+.post-content hr {
+  border: 0;
+  height: 1px;
+  background: var(--surface-border);
+  margin: 2.5rem 0;
+}
+
+/* ==========================================================================
+   Enhanced Code Blocks & Syntax Highlighting
+   ========================================================================== */
+
+.post-content pre {
+  position: relative;
+  background-color: var(--surface) !important;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 2.75rem 1.25rem 1.25rem 1.25rem; /* Extra top padding for code header */
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Base Code Formatting */
+.post-content pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+  color: inherit;
+  font-family: inherit;
+}
+
+/* Automatic Language Badge (Top-Left) */
+.post-content pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.35rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.08);
+  border-bottom-right-radius: 8px;
+  border-bottom: 1px solid var(--surface-border);
+  border-right: 1px solid var(--surface-border);
+}
+
+/* Copy Button Styling (Top-Right) */
+.copy-code-btn {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.copy-code-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.copy-code-btn.copied {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+/* ==========================================================================
+   Pagefind UX Overrides (Glassmorphism & Custom Styling)
+   ========================================================================== */
+
+/* Search Input Styling */
+#pagefind-search .pagefind-ui__search-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-sans, inherit);
+  font-size: 0.95rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#pagefind-search .pagefind-ui__search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+#pagefind-search .pagefind-ui__search-input::placeholder {
+  color: var(--muted);
+}
+
+/* Position Container for Clear Button */
+#pagefind-search .pagefind-ui__search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0; /* Hide default "Clear" text */
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+#pagefind-search .pagefind-ui__search-clear:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Inject Custom SVG 'X' Icon into Clear Button */
+#pagefind-search .pagefind-ui__search-clear::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Form Container Layout Adjustments */
+#pagefind-search .pagefind-ui__form {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Search Drawer Results Styling */
+#pagefind-search .pagefind-ui__drawer {
+  max-height: 40vh;
+  overflow-y: auto;
+  margin-top: 0.5rem;
+}
+
+#pagefind-search .pagefind-ui__result {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+#pagefind-search .pagefind-ui__result-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#pagefind-search .pagefind-ui__result-excerpt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* ==========================================================================
+   Pagefind UX Fixes: Fixed Clear Icon & Full-Tile Clicking
+   ========================================================================== */
+
+/* 1. Form Container & Input Positioning */
+#pagefind-search .pagefind-ui__form {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+#pagefind-search .pagefind-ui__search-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-sans, inherit);
+  font-size: 0.95rem;
+  padding: 0.75rem 2.75rem 0.75rem 1rem; /* Space on right for clear button */
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#pagefind-search .pagefind-ui__search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+/* 2. Anchor Clear Button inside the input box (Doesn't float on scroll) */
+#pagefind-search .pagefind-ui__search-clear {
+  display: none;
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0;
+  line-height: 0;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  z-index: 2;
+  transition: color 0.15s ease;
+}
+
+#pagefind-search .pagefind-ui__search-clear:hover {
+  display: none;
+  color: var(--text);
+}
+
+/* Custom SVG 'X' Icon */
+#pagefind-search .pagefind-ui__search-clear::before {
+  display: none;
+  content: "";
+  /* display: inline-block; */
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Hide clear button when input is empty */
+#pagefind-search .pagefind-ui__search-input:placeholder-shown + .pagefind-ui__search-clear {
+  display: none;
+}
+
+/* 3. Make Entire Result Card Clickable */
+#pagefind-search .pagefind-ui__result {
+  position: relative; /* Anchor point for pseudo-element */
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+#pagefind-search .pagefind-ui__result:hover {
+  background: var(--surface);
+  border-color: var(--surface-border-accent);
+}
+
+/* Stretch the title link over the entire card */
+#pagefind-search .pagefind-ui__result-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+#pagefind-search .pagefind-ui__result-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+#pagefind-search .pagefind-ui__result-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#pagefind-search .pagefind-ui__result-excerpt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}

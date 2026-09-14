@@ -1,18 +1,45 @@
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects | Your Name</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 0 auto; padding: 2rem; }
-  </style>
-</head>
-<body>
-  <nav><a href="/">Home</a> | <a href="/about">About</a> | <a href="/blog">Blog</a> | <a href="/projects">Projects</a></nav>
-  <h1>Projects</h1>
-  <h2>Project One</h2>
-  <p>What it does. <a href="https://github.com/you/project-one">Source</a></p>
-  <h2>Project Two</h2>
-  <p>What it does. <a href="https://github.com/you/project-two">Source</a></p>
-</body>
-</html>   
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+// Move projects array to a data file later if desired
+const projects = [
+  {
+    title: "Personal Engineering Platform",
+    description: "Zero-cost, static personal portfolio & blog built with Astro 7, Pagefind static search, and Cloudflare Pages.",
+    tags: ["Astro", "TypeScript", "Cloudflare", "CSS"],
+    href: "https://github.com/yourname/my-website"
+  },
+  {
+    title: "Obsidian Auto-Sync Vault",
+    description: "Automated git-backed private notes architecture sync system using headless git hooks.",
+    tags: ["Obsidian", "Git", "Bash"],
+    href: "https://github.com/yourname/my-notes"
+  }
+];
+---
+
+<Base title="Projects">
+  <section class="page-header">
+    <h1>Featured Projects</h1>
+    <p class="subtitle">Open-source tools, infrastructure setups, and web applications I've built.</p>
+  </section>
+
+  <div class="projects-grid">
+    {projects.map(project => (
+      <ProjectCard {...project} />
+    ))}
+  </div>
+</Base>
+
+<style>
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 { font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0; }
+  .subtitle { color: var(--muted); font-size: 1.05rem; margin: 0; }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+</style>

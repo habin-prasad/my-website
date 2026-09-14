@@ -1,0 +1,46 @@
+---
+---
+
+<button id="search-trigger-btn" class="search-trigger-btn" aria-label="Search site">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="11" cy="11" r="8"></circle>
+    <path d="m21 21-4.3-4.3"></path>
+  </svg>
+  <span>Search</span>
+  <kbd>⌘K</kbd>
+</button>
+
+<script>
+  function setupTrigger() {
+    const btn = document.getElementById('search-trigger-btn');
+    btn?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('open-search'));
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', setupTrigger);
+  document.addEventListener('astro:page-load', setupTrigger);
+</script>
+
+<style>
+  .search-trigger-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--surface-border);
+    color: var(--muted);
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+  }
+
+  .search-trigger-btn:hover {
+    border-color: var(--surface-border-accent);
+    color: var(--text);
+    background: rgba(30, 41, 59, 0.8);
+  }
+</style>

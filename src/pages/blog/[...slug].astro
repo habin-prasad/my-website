@@ -1,26 +1,93 @@
 ---
+import Base from '../../layouts/Base.astro';
+import ProgressBar from '../../components/ProgressBar.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import CodeBlockScript from '../../components/CodeBlockScript.astro';
 import { getCollection, render } from 'astro:content';
+import ReactionButton from '../../components/ReactionButton.astro';
+
+export const prerender = true;
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  console.log('COLLECTION SIZE:', posts.length);
-  console.log('POSTS:', posts.map(p => p.id));
-  return posts.filter(p => !p.data.draft).map(post => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  return posts
+    .filter(p => !p.data.draft)
+    .map(post => {
+      // Derive the slug here so it's explicitly passed in props
+      const postSlug = post.slug ?? post.id.replace(/\.[^/.]+$/, "");
+      return {
+        params: { slug: postSlug },
+        props: { post, slug: postSlug },
+      };
+    });
 }
 
-const { post } = Astro.props;
-console.log('RENDERING POST:', post?.id);
-const { Content } = await render(post);
+const { post, slug } = Astro.props;
+
+// headings is returned natively by render()
+const { Content, headings } = await render(post);
+const ogImageUrl = `/og/${slug}.png`;
 ---
-<html>
-<body>
-  <nav><a href="/">Home</a> | <a href="/about">About</a> | <a href="/blog">Blog</a> | <a href="/projects">Projects</a></nav>
-  <h1>{post.data.title}</h1>
-  <small>{post.data.pubDate.toDateString()}</small>
-  <hr />
-  <Content />
-</body>   
-</html>   
+
+<Base title={post.data.title} description={post.data.description} image={ogImageUrl}>
+  <ProgressBar />
+
+  <div class="article-layout">
+    <article class="post-content">
+      <header class="post-header">
+        <h1>{post.data.title}</h1>
+        <p class="post-date">{post.data.pubDate.toDateString()}</p>
+      </header>
+
+      <Content />
+      <ReactionButton slug={slug} />
+    </article>
+
+    <aside class="sidebar">
+      <div class="sticky-wrapper">
+        <TableOfContents headings={headings} />
+      </div>
+    </aside>
+  </div>
+
+  <CodeBlockScript />
+</Base>
+
+<style>
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  /* 2-Column Desktop Grid with Sticky Sidebar */
+  @media (min-width: 1024px) {
+    .article-layout {
+      grid-template-columns: minmax(0, 1fr) 260px;
+    }
+  }
+
+  .post-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--surface-border);
+    padding-bottom: 1.5rem;
+  }
+
+  .post-header h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .post-date {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .sticky-wrapper {
+    position: sticky;
+    top: 5rem;
+  }
+</style>

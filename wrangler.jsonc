@@ -1,0 +1,17 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"compatibility_date": "2026-09-11",
+	"compatibility_flags": ["global_fetch_strictly_public"],
+	"name": "my-website",
+	"main": "@astrojs/cloudflare/entrypoints/server",
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+  		"TURSO_HTTP_URL": "https://portfolio-db-tesla163.aws-ap-south-1.turso.io"
+	}
+}
