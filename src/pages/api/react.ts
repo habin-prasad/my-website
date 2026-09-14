@@ -7,7 +7,7 @@ export const prerender = false; // Edge serverless route
 // ---------------------------------------------------------------------------
 // GET: Fetch reaction count with Edge/Browser Caching
 // ---------------------------------------------------------------------------
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET: APIRoute = async ({ request }) => {
   const url = new URL(request.url);
   const slug = url.searchParams.get('slug');
 
@@ -17,14 +17,12 @@ export const GET: APIRoute = async ({ request, locals }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-  // Extract runtime env bindings for Cloudflare Pages
-  const runtimeEnv = locals?.runtime?.env;
-
+  
   try {
     const rows = await queryDb<{ count: number }>({
       sql: 'SELECT count FROM post_reactions WHERE slug = ?',
       args: [slug],
-    }, runtimeEnv);
+    });
 
     const count = rows[0]?.count ?? 0;
 
@@ -44,11 +42,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
 // ---------------------------------------------------------------------------
 // POST: Increment reaction count using Atomic RETURNING (1 DB roundtrip)
 // ---------------------------------------------------------------------------
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   const clientIP = getClientIP(request);
-  // Extract runtime env bindings for Cloudflare Pages
-  const runtimeEnv = locals?.runtime?.env;
-  // Rate Limiting: Max 5 claps per 60s per IP
   const limiter = rateLimit(clientIP, {
     windowMs: 60 * 1000,
     maxRequests: 5,
@@ -93,7 +88,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         RETURNING count
       `,
       args: [slug],
-    }, runtimeEnv);
+    });
 
     const newCount = rows[0]?.count ?? 1;
 

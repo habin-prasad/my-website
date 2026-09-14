@@ -3,6 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 
 import cloudflare from '@astrojs/cloudflare';
+import { defineConfig, envField } from 'astro/config'; // <-- Ensure envField is imported here
 
 export default defineConfig({
   site: 'https://my-website.habinprasad163.workers.dev/',
@@ -20,5 +21,29 @@ export default defineConfig({
       exclude: ['@resvg/resvg-wasm'],
     },
   },
+  env: {
+    schema: {
+      // Server-only secrets
+      TURNSTILE_SECRET_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true, // Allows build to pass without key
+      }),
+      UPSTASH_REDIS_REST_URL: envField.string({
+        context: 'server',
+        access: 'secret',
+      }),
+      UPSTASH_REDIS_REST_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+      }),
+      // Client-exposed variables
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true, // Allows build to pass without key
+        
+      }),
+    },},
 });
 

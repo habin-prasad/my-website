@@ -1,0 +1,40 @@
+---
+title: "Autonomous Multi-Tenant Quality Engineering Platform"
+role: "Head of Automation / Tech Lead"
+period: "2024 - Present"
+summary: "Architected a zero-flakiness, distributed test execution platform from scratch, reducing release regression cycles from 4 days to 45 minutes across 12 product teams."
+metrics:
+  - "88% reduction in regression cycle time"
+  - "$140k/yr saved in CI runner compute costs"
+  - "Zero production-critical bugs missed over 4 quarters"
+domain: "Platform & Infrastructure"
+technologies: ["TypeScript", "Playwright", "Docker", "Turso/SQLite", "Go", "GitHub Actions"]
+featured: true
+---
+
+## Executive Summary
+
+As Tech Lead driving quality infrastructure, I led the from-scratch design and rollout of an autonomous test execution engine. Prior to this initiative, legacy test suites suffered from high flakiness and long feedback loops, blocking daily deployment goals.
+
+## Strategic Impact & Leadership
+
+- **Team Alignment:** Directed a cross-functional squad of senior automation engineers while aligning quality strategy directly with VP of Engineering goals.
+- **Shift-Left Adoption:** Spearheaded developer-centric testing practices, driving test authoring ownership directly into feature engineering teams.
+- **Resource Optimization:** Redesigned CI runner orchestration, eliminating redundant pipeline stages and optimizing compute allocation.
+
+## Architecture Breakdown
+[ Developer Commit ] ──► [ Lightweight Edge Scheduler ]
+│
+┌───────────────┴───────────────┐
+▼                               ▼
+[ Parallel Node Runner 1 ]     [ Parallel Node Runner 2 ]
+│                               │
+└───────────────┬───────────────┘
+▼
+[ Real-Time Telemetry Dashboard ]
+
+
+### Key Technical Challenges Overcome
+
+1. **Flakiness Isolation:** Implemented deterministic state reset algorithms using containerized test environments.
+2. **Parallel Scheduling:** Built a custom dynamic shard balancer that allocates test suits based on historical execution duration.

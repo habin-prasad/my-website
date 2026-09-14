@@ -1,65 +1,124 @@
 ---
+import type { CollectionEntry } from 'astro:content';
+
 interface Props {
-  title: string;
-  description: string;
-  tags: string[];
-  href: string;
+  project: CollectionEntry<'projects'>;
 }
 
-const { title, description, tags, href } = Astro.props;
+const { project } = Astro.props;
+if (!project || !project.data) return null;
+
+const { data } = project;
+// Astro 5 glob loader uses 'id' instead of 'slug'
+const projectId = project.id || (project as any).slug;
 ---
 
-<a href={href} class="glass-card project-card" target="_blank" rel="noopener noreferrer">
+<div class="project-card glass-card">
   <div class="card-header">
-    <h3>{title}</h3>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+    <span class="domain-tag">{data.domain}</span>
+    <span class="period-text">{data.period}</span>
   </div>
-  <p>{description}</p>
-  <div class="tags">
-    {tags.map(tag => <span class="tag">#{tag}</span>)}
+
+  <h3 class="project-title">
+    <a href={`/projects/${projectId}`}>{data.title}</a>
+  </h3>
+  
+  <p class="role-subtitle">{data.role}</p>
+  <p class="summary-text">{data.summary}</p>
+
+  <div class="metrics-grid">
+    {(data.metrics || []).map((metric) => (
+      <div class="metric-badge">
+        <span class="metric-icon">⚡</span>
+        <span>{metric}</span>
+      </div>
+    ))}
   </div>
-</a>
+
+  <div class="tech-stack">
+    {(data.technologies || []).map((tech) => (
+      <span class="tech-chip">{tech}</span>
+    ))}
+  </div>
+
+  <div class="card-footer">
+    <a href={`/projects/${projectId}`} class="read-more-link">
+      Read Case Study & Architecture →
+    </a>
+  </div>
+</div>
 
 <style>
   .project-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface);
     display: flex;
     flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-    gap: 0.75rem;
+    gap: 1rem;
   }
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 0.8rem;
   }
-  .card-header h3 {
-    margin: 0;
-    font-size: 1.15rem;
+  .domain-tag {
+    color: var(--accent);
     font-weight: 600;
-    color: var(--text);
   }
-  .card-header svg {
-    color: var(--muted);
-    transition: transform 0.2s, color 0.2s;
+  .period-text {
+    opacity: 0.6;
   }
-  .project-card:hover .card-header svg {
-    color: var(--accent);
-    transform: translate(2px, -2px);
-  }
-  p {
+  .project-title {
     margin: 0;
-    color: var(--muted);
-    font-size: 0.925rem;
+    font-size: 1.25rem;
   }
-  .tags {
+  .role-subtitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.8;
+    margin: 0;
+  }
+  .summary-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+    margin: 0;
+  }
+  .metrics-grid {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: auto;
   }
-  .tag {
-    font-family: var(--font-mono);
+  .metric-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid var(--surface-border-accent);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tech-chip {
+    padding: 0.15rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
     font-size: 0.75rem;
+    font-family: var(--font-mono);
+  }
+  .read-more-link {
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--accent);
+    text-decoration: none;
   }
 </style>

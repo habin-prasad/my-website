@@ -8,16 +8,15 @@ interface TursoResponseCell {
   value?: string | number | boolean | null;
 }
 
-export async function queryDb<T = Record<string, any>>(
-  stmt: TursoStmt,
-  env?: Record<string, any>
-): Promise<T[]> {
-  // Check Cloudflare runtime env first, then fallback to import.meta.env
-  const rawUrl = env?.TURSO_HTTP_URL || import.meta.env.TURSO_HTTP_URL;
-  const token = env?.TURSO_AUTH_TOKEN || import.meta.env.TURSO_AUTH_TOKEN;
+export async function queryDb<T = Record<string, any>>(stmt: TursoStmt): Promise<T[]> {
+  // Resolve runtime env without triggering Astro's deprecation warning on locals
+  const cfEnv = (globalThis as any).process?.env || (globalThis as any).env || {};
+  
+  const rawUrl = cfEnv.TURSO_HTTP_URL || import.meta.env.TURSO_HTTP_URL;
+  const token = cfEnv.TURSO_AUTH_TOKEN || import.meta.env.TURSO_AUTH_TOKEN;
 
   if (!rawUrl || !token) {
-    console.error('❌ Turso Error: TURSO_HTTP_URL or TURSO_AUTH_TOKEN missing from environment variables');
+    console.error('❌ Turso Error: TURSO_HTTP_URL or TURSO_AUTH_TOKEN missing');
     throw new Error('Database credentials missing');
   }
 

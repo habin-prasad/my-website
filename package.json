@@ -7,10 +7,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist/client --output-path dist/client/pagefind",
+    "build": "astro build && pagefind --site dist/client  --output-path public/pagefind",
     "preview": "astro preview",
     "astro": "astro",
-    "pagefind:dev": "astro build && pagefind --site dist --output-path public/pagefind",
+    "pagefind:dev": "astro build && pagefind --site dist/client --output-path public/pagefind",
     "generate-types": "wrangler types"
   },
   "dependencies": {
@@ -19,6 +19,8 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@resvg/resvg-wasm": "^2.6.2",
+    "@upstash/ratelimit": "^2.1.0",
+    "@upstash/redis": "^1.38.4",
     "astro": "^7.3.2",
     "pagefind": "^1.5.2",
     "satori": "^0.33.4",

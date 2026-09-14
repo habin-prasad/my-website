@@ -5,6 +5,8 @@ import TableOfContents from '../../components/TableOfContents.astro';
 import CodeBlockScript from '../../components/CodeBlockScript.astro';
 import { getCollection, render } from 'astro:content';
 import ReactionButton from '../../components/ReactionButton.astro';
+import { env } from "cloudflare:workers"
+
 
 export const prerender = true;
 

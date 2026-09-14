@@ -1,0 +1,31 @@
+---
+title: "Zero-Flakiness Distributed Test Execution Engine"
+role: "Head of Automation / Tech Lead"
+period: "2024 - Present"
+summary: "Designed and implemented a containerized, parallel test execution engine from scratch, reducing regression feedback loops from 4 hours to 18 minutes."
+metrics:
+  - "92% reduction in pipeline feedback times"
+  - "$120k/yr saved in CI worker compute costs"
+  - "100% test isolation across 14 squad pipelines"
+domain: "Platform & Infrastructure"
+technologies: ["TypeScript", "Playwright", "Docker", "Turso", "GitHub Actions"]
+featured: true
+---
+
+## Situation & Problem Scope
+
+Prior to this initiative, automated regression suites ran sequentially in a monolithic CI pipeline. Flaky browser state caused false negatives on **23% of runs**, requiring manual developer restarts and delaying daily deployments.
+
+## Strategic Leadership & Team Impact
+
+- **Cross-Squad Alignment:** Standardized quality contracts across 14 independent engineering squads without disrupting feature delivery schedules.
+- **Mentorship:** Conducted architecture workshops for senior engineers, shifting automated test authoring directly into sprint workflows.
+
+## Technical Architecture
+
+The platform dynamically shards test suites across isolated ephemeral Docker containers, coordinating state back to a centralized HTTP API endpoint.
+
+### Dynamic Sharding Algorithm
+
+1. **Historical Execution Profiling:** Test durations are queried from SQLite at runtime.
+2. **Bin-Packing Distribution:** The runner allocates specs across parallel workers to ensure even execution runtime across nodes.

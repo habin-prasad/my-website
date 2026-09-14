@@ -1,0 +1,62 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+export const prerender = true; // Ensures static generation if operating in hybrid/SSR mode
+
+const allProjects = (await getCollection('projects')) || [];
+const featuredProjects = allProjects.filter((p) => p?.data?.featured === true);
+const otherProjects = allProjects.filter((p) => !p?.data?.featured);
+---
+
+<PageLayout 
+  title="Engineering Leadership & Systems" 
+  subtitle="Architectural case studies, from-scratch platforms, and strategic automation initiatives."
+>
+  {featuredProjects.length > 0 && (
+    <section class="projects-section">
+      <h2>Featured Case Studies</h2>
+      <div class="projects-grid">
+        {featuredProjects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {otherProjects.length > 0 && (
+    <section class="projects-section">
+      <h2>{featuredProjects.length > 0 ? "Other Initiatives" : "All Initiatives"}</h2>
+      <div class="projects-grid">
+        {otherProjects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {allProjects.length === 0 && (
+    <p class="empty-state">No projects found. Check <code>src/content/projects/</code>.</p>
+  )}
+</PageLayout>
+
+<style>
+  .projects-section {
+    margin-bottom: 2.5rem;
+  }
+  .projects-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+  }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .empty-state {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

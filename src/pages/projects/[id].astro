@@ -1,0 +1,104 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+export const prerender = true;
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { id } = Astro.params;
+let project = Astro.props.project;
+
+if (!project && id) {
+  project = await getEntry('projects', id);
+}
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const { data } = project;
+const { Content } = await render(project);
+---
+
+<PageLayout title={data.title} subtitle={`${data.role} · ${data.period}`}>
+  <article class="case-study-container">
+    <header class="case-study-header glass-card">
+      <div class="header-top">
+        <span class="domain-badge">{data.domain}</span>
+        <span class="period">{data.period}</span>
+      </div>
+      
+      <p class="summary-lead">{data.summary}</p>
+
+      <div class="metrics-grid">
+        {data.metrics?.map((metric) => (
+          <div class="metric-pill">
+            <span class="icon">⚡</span>
+            <span>{metric}</span>
+          </div>
+        ))}
+      </div>
+
+      <div class="tech-stack">
+        {(data.technologies || []).map((tech) => (
+          <span class="tech-chip">{tech}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="post-content glass-card">
+      <Content />
+    </div>
+  </article>
+</PageLayout>
+
+<style>
+  .project-header h1 {
+    font-size: 2.25rem;
+    margin: 0.5rem 0;
+  }
+  .role-lead {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-top: 0;
+  }
+  .meta-badges {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .domain-badge {
+    color: var(--accent);
+  }
+  .impact-box {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+  }
+  .box-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .impact-box ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.2rem;
+  }
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .divider {
+    border: 0;
+    height: 1px;
+    background: var(--surface-border);
+    margin: 2rem 0;
+  }
+</style>
