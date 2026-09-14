@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
+export const prerender = true; // Renders PNGs at build time (no runtime serverless/WASM overhead)
+
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   
