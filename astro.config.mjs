@@ -15,9 +15,5 @@ export default defineConfig({
     },
   },
   adapter: cloudflare(),
-  vite: {
-    optimizeDeps: {
-      exclude: ['@resvg/resvg-js'],
-    },
-  },
+
 });
