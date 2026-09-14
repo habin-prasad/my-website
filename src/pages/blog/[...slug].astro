@@ -6,6 +6,8 @@ import CodeBlockScript from '../../components/CodeBlockScript.astro';
 import { getCollection, render } from 'astro:content';
 import ReactionButton from '../../components/ReactionButton.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts

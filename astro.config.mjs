@@ -7,7 +7,7 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://my-website.habinprasad163.workers.dev/',
   integrations: [sitemap(), mdx()],
-
+  output: 'server',
   markdown: {
     shikiConfig: {
       theme: 'one-dark-pro', // Match your dark glass theme
@@ -21,3 +21,4 @@ export default defineConfig({
     },
   },
 });
+
