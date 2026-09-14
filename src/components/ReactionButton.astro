@@ -1,0 +1,129 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<div class="reaction-container glass-card" data-slug={slug}>
+  <button id="clap-btn" class="clap-btn" aria-label="Like this post">
+    <svg class="clap-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+    </svg>
+    <span class="clap-label">Applaud</span>
+  </button>
+  <div class="clap-count-badge">
+    <span id="clap-count">--</span>
+  </div>
+</div>
+
+<script>
+  function setupReactionButton() {
+    const container = document.querySelector('.reaction-container') as HTMLElement;
+    if (!container) return;
+
+    const slug = container.dataset.slug;
+    const btn = document.getElementById('clap-btn');
+    const countEl = document.getElementById('clap-count');
+
+    if (!slug || !btn || !countEl) return;
+
+    // Fetch initial count from our vendor-agnostic HTTP endpoint
+    async function loadReactions() {
+      try {
+        const res = await fetch(`/api/react?slug=${encodeURIComponent(slug)}`);
+        if (res.ok) {
+          const data = await res.json();
+          countEl.textContent = data.count.toString();
+        } else {
+          countEl.textContent = '0';
+        }
+      } catch (err) {
+        countEl.textContent = '0';
+      }
+    }
+
+    // Handle button click (increment count)
+    async function handleClap() {
+      // Optimistic UI update
+      const currentCount = parseInt(countEl.textContent || '0', 10);
+      countEl.textContent = (currentCount + 1).toString();
+      btn.classList.add('clapped');
+
+      try {
+        const res = await fetch('/api/react', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          countEl.textContent = data.count.toString();
+        }
+      } catch (err) {
+        // Rollback on failure
+        countEl.textContent = currentCount.toString();
+        btn.classList.remove('clapped');
+      }
+
+      setTimeout(() => btn.classList.remove('clapped'), 300);
+    }
+
+    btn.addEventListener('click', handleClap);
+    loadReactions();
+  }
+
+  document.addEventListener('DOMContentLoaded', setupReactionButton);
+  document.addEventListener('astro:page-load', setupReactionButton);
+</script>
+
+<style>
+  .reaction-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.85rem;
+    margin-top: 2rem;
+    border: 1px solid var(--surface-border);
+    border-radius: 9999px;
+    background: var(--surface);
+  }
+
+  .clap-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .clap-btn:hover {
+    color: var(--accent);
+  }
+
+  .clap-btn.clapped .clap-icon {
+    transform: scale(1.25) rotate(-10deg);
+    color: var(--accent);
+  }
+
+  .clap-icon {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.15s ease;
+  }
+
+  .clap-count-badge {
+    padding: 0.15rem 0.6rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid var(--surface-border-accent);
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+</style>

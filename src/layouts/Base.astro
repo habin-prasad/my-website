@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css'; // Adjust path if your CSS is at src/global.css
+import SearchTrigger from '../components/SearchTrigger.astro';
+import SearchModal from '../components/SearchModal.astro';
 
 interface Props {
   title?: string;
@@ -44,16 +46,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
   <body>
     <header class="header">
       <nav class="nav">
-        <a href="/" class="nav-brand">habinprasad<span class="brand-accent">.dev</span></a>
+        <a href="/" class="nav-brand">habin<span class="brand-accent">.dev</span></a>
         
         <div class="nav-links">
           <a href="/about" class={currentPath.startsWith('/about') ? 'active' : ''}>About</a>
           <a href="/blog" class={currentPath.startsWith('/blog') ? 'active' : ''}>Blog</a>
           <a href="/projects" class={currentPath.startsWith('/projects') ? 'active' : ''}>Projects</a>
           
-          <!-- Pagefind Search Modal Trigger -->
-          <pagefind-modal-trigger class="search-trigger">
-          </pagefind-modal-trigger>
+          <SearchTrigger />
         </div>
       </nav>
     </header>
@@ -68,7 +68,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
       </div>
     </footer>
 
-    <!-- Global Search Modal Box -->
-    <pagefind-modal></pagefind-modal>
+
+    <SearchModal />
   </body>
 </html>

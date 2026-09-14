@@ -1,83 +1,91 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ProgressBar from '../../components/ProgressBar.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import CodeBlockScript from '../../components/CodeBlockScript.astro';
 import { getCollection, render } from 'astro:content';
+import ReactionButton from '../../components/ReactionButton.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  
   return posts
     .filter(p => !p.data.draft)
-    .map(post => ({
-      // Use post.slug if defined; fallback to post.id with extension removed
-      params: { slug: post.slug ?? post.id.replace(/\.[^/.]+$/, "") },
-      props: { post },
-    }));
+    .map(post => {
+      // Derive the slug here so it's explicitly passed in props
+      const postSlug = post.slug ?? post.id.replace(/\.[^/.]+$/, "");
+      return {
+        params: { slug: postSlug },
+        props: { post, slug: postSlug },
+      };
+    });
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, slug } = Astro.props;
+
+// headings is returned natively by render()
+const { Content, headings } = await render(post);
+const ogImageUrl = `/og/${slug}.png`;
 ---
-<Base title={`${post.data.title}`} description={post.data.description}>
-  <article class="blog-article">
-    <header class="article-header">
-      <h1>{post.data.title}</h1>
-      <time datetime={post.data.pubDate.toISOString()}>
-        {post.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-      </time>
-    </header>
 
-    <div class="post-content">
+<Base title={post.data.title} description={post.data.description} image={ogImageUrl}>
+  <ProgressBar />
+
+  <div class="article-layout">
+    <article class="post-content">
+      <header class="post-header">
+        <h1>{post.data.title}</h1>
+        <p class="post-date">{post.data.pubDate.toDateString()}</p>
+      </header>
+
       <Content />
-    </div>
-  </article>
+      <ReactionButton slug={slug} />
+    </article>
+
+    <aside class="sidebar">
+      <div class="sticky-wrapper">
+        <TableOfContents headings={headings} />
+      </div>
+    </aside>
+  </div>
+
+  <CodeBlockScript />
 </Base>
-<script>
-  // Add copy buttons to code blocks
-  document.addEventListener('DOMContentLoaded', () => {
-    const codeBlocks = document.querySelectorAll('.post-content pre');
 
-    codeBlocks.forEach((block) => {
-      // Create wrapper if not already relative
-      block.style.position = 'relative';
+<style>
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
 
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'copy-code-btn';
-      copyBtn.innerText = 'Copy';
-      
-      block.appendChild(copyBtn);
+  /* 2-Column Desktop Grid with Sticky Sidebar */
+  @media (min-width: 1024px) {
+    .article-layout {
+      grid-template-columns: minmax(0, 1fr) 260px;
+    }
+  }
 
-      copyBtn.addEventListener('click', async () => {
-        const code = block.querySelector('code');
-        const text = code ? code.innerText : '';
+  .post-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--surface-border);
+    padding-bottom: 1.5rem;
+  }
 
-        await navigator.clipboard.writeText(text);
-        copyBtn.innerText = 'Copied!';
-        
-        setTimeout(() => {
-          copyBtn.innerText = 'Copy';
-        }, 2000);
-      });
-    });
-  });
-</script>
+  .post-header h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+  }
 
-<style is:global>
-  .copy-code-btn {
-    position: absolute;
-    top: 0.6rem;
-    right: 0.6rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+  .post-date {
     font-family: var(--font-mono);
     color: var(--muted);
-    background: var(--surface-hover);
-    border: 1px solid var(--surface-border);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s ease;
+    font-size: 0.85rem;
+    margin: 0;
   }
-  .copy-code-btn:hover {
-    color: var(--text);
-    border-color: var(--accent);
+
+  .sticky-wrapper {
+    position: sticky;
+    top: 5rem;
   }
 </style>

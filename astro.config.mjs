@@ -1,14 +1,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-// astro.config.mjs
-import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   site: 'https://yourname.com',
-  integrations: [sitemap()],
+  integrations: [sitemap(), mdx()],
   markdown: {
     shikiConfig: {
-      theme: 'github-dark', // Sets dark background and syntax token colors
+      theme: 'one-dark-pro', // Match your dark glass theme
+      wrap: false,
     },
   },
 });   

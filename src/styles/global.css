@@ -314,3 +314,286 @@ kbd {
   background: var(--surface-border);
   margin: 2.5rem 0;
 }
+
+/* ==========================================================================
+   Enhanced Code Blocks & Syntax Highlighting
+   ========================================================================== */
+
+.post-content pre {
+  position: relative;
+  background-color: var(--surface) !important;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 2.75rem 1.25rem 1.25rem 1.25rem; /* Extra top padding for code header */
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Base Code Formatting */
+.post-content pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+  color: inherit;
+  font-family: inherit;
+}
+
+/* Automatic Language Badge (Top-Left) */
+.post-content pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.35rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.08);
+  border-bottom-right-radius: 8px;
+  border-bottom: 1px solid var(--surface-border);
+  border-right: 1px solid var(--surface-border);
+}
+
+/* Copy Button Styling (Top-Right) */
+.copy-code-btn {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.copy-code-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.copy-code-btn.copied {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+/* ==========================================================================
+   Pagefind UX Overrides (Glassmorphism & Custom Styling)
+   ========================================================================== */
+
+/* Search Input Styling */
+#pagefind-search .pagefind-ui__search-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-sans, inherit);
+  font-size: 0.95rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#pagefind-search .pagefind-ui__search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+#pagefind-search .pagefind-ui__search-input::placeholder {
+  color: var(--muted);
+}
+
+/* Position Container for Clear Button */
+#pagefind-search .pagefind-ui__search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0; /* Hide default "Clear" text */
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+#pagefind-search .pagefind-ui__search-clear:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Inject Custom SVG 'X' Icon into Clear Button */
+#pagefind-search .pagefind-ui__search-clear::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Form Container Layout Adjustments */
+#pagefind-search .pagefind-ui__form {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Search Drawer Results Styling */
+#pagefind-search .pagefind-ui__drawer {
+  max-height: 40vh;
+  overflow-y: auto;
+  margin-top: 0.5rem;
+}
+
+#pagefind-search .pagefind-ui__result {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+#pagefind-search .pagefind-ui__result-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#pagefind-search .pagefind-ui__result-excerpt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* ==========================================================================
+   Pagefind UX Fixes: Fixed Clear Icon & Full-Tile Clicking
+   ========================================================================== */
+
+/* 1. Form Container & Input Positioning */
+#pagefind-search .pagefind-ui__form {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+#pagefind-search .pagefind-ui__search-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-sans, inherit);
+  font-size: 0.95rem;
+  padding: 0.75rem 2.75rem 0.75rem 1rem; /* Space on right for clear button */
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#pagefind-search .pagefind-ui__search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+/* 2. Anchor Clear Button inside the input box (Doesn't float on scroll) */
+#pagefind-search .pagefind-ui__search-clear {
+  display: none;
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0;
+  line-height: 0;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  z-index: 2;
+  transition: color 0.15s ease;
+}
+
+#pagefind-search .pagefind-ui__search-clear:hover {
+  display: none;
+  color: var(--text);
+}
+
+/* Custom SVG 'X' Icon */
+#pagefind-search .pagefind-ui__search-clear::before {
+  display: none;
+  content: "";
+  /* display: inline-block; */
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Hide clear button when input is empty */
+#pagefind-search .pagefind-ui__search-input:placeholder-shown + .pagefind-ui__search-clear {
+  display: none;
+}
+
+/* 3. Make Entire Result Card Clickable */
+#pagefind-search .pagefind-ui__result {
+  position: relative; /* Anchor point for pseudo-element */
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+#pagefind-search .pagefind-ui__result:hover {
+  background: var(--surface);
+  border-color: var(--surface-border-accent);
+}
+
+/* Stretch the title link over the entire card */
+#pagefind-search .pagefind-ui__result-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+#pagefind-search .pagefind-ui__result-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+#pagefind-search .pagefind-ui__result-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#pagefind-search .pagefind-ui__result-excerpt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
