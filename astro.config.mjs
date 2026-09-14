@@ -5,7 +5,7 @@ import mdx from '@astrojs/mdx';
 import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  site: 'https://yourname.com',
+  site: 'https://my-website.habinprasad163.workers.dev/',
   integrations: [sitemap(), mdx()],
 
   markdown: {

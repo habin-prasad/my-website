@@ -10,7 +10,7 @@ export async function GET(context) {
   return rss({
     title: 'Habin | Engineering Journal',
     description: 'Thoughts on software development, infrastructure, and web technologies.',
-    site: context.site || 'https://yourname.com',
+    site: context.site || 'https://my-website.habinprasad163.workers.dev/',
     items: publishedPosts.map((post) => ({
       title: post.data.title,
       pubDate: post.data.pubDate,
