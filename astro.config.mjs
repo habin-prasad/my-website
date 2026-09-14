@@ -14,6 +14,5 @@ export default defineConfig({
       wrap: false,
     },
   },
-  output: 'hybrid',
   adapter: cloudflare(),
 });
