@@ -8,18 +8,8 @@ interface RequestRecord {
   resetTime: number;
 }
 
-// In-memory store persistent across requests in single serverless instances
+// In-memory store persistent across requests within a warm Cloudflare Worker instance
 const ipStore = new Map<string, RequestRecord>();
-
-// Periodic cleanup to avoid memory leaks from inactive IPs
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, record] of ipStore.entries()) {
-    if (now > record.resetTime) {
-      ipStore.delete(ip);
-    }
-  }
-}, 60000); // Purge every 60 seconds
 
 export function rateLimit(ip: string, config: RateLimitConfig): {
   success: boolean;
@@ -29,6 +19,15 @@ export function rateLimit(ip: string, config: RateLimitConfig): {
 } {
   const now = Date.now();
   const record = ipStore.get(ip);
+
+  // Lazy Cleanup: Prune expired entries when store grows to avoid memory leaks
+  if (ipStore.size > 500) {
+    for (const [key, value] of ipStore.entries()) {
+      if (now > value.resetTime) {
+        ipStore.delete(key);
+      }
+    }
+  }
 
   // Case 1: IP not seen yet or previous window expired
   if (!record || now > record.resetTime) {
