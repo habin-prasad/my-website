@@ -1,0 +1,33 @@
+---
+// src/pages/[slug].astro
+export const prerender = true;
+
+import { getCollection, render } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+
+export async function getStaticPaths() {
+  const pageEntries = await getCollection('pages');
+
+  return pageEntries.map((entry) => {
+    // Fallback for Astro 4 (slug) vs Astro 5 (id)
+    const rawSlug = entry.slug ?? entry.id;
+    // Strip .md or .mdx extension
+    const slug = rawSlug.replace(/\.[^/.]+$/, '');
+
+    return {
+      params: { slug },
+      props: { entry },
+    };
+  });
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<PageLayout title={entry.data.title}>
+  <main class="max-w-3xl mx-auto py-12 px-4 prose dark:prose-invert">
+    <h1>{entry.data.title}</h1>
+    <Content />
+  </main>
+</PageLayout>
