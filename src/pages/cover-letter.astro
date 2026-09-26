@@ -1,0 +1,37 @@
+---
+import PrintLayout from '../layouts/PrintLayout.astro';
+import { SOCIAL_LINKS } from '../config/social';
+import { PROFILE } from '../config/profile';
+
+const coverFiles = import.meta.glob('../content/coverLetter/*.md', { eager: true });
+const doc = Object.values(coverFiles)[0] as any;
+
+if (!doc) {
+  throw new Error('No .md file found in src/content/coverLetter/. Please check folder path.');
+}
+
+const Content = doc.Content;
+const frontmatter = doc.frontmatter || {};
+---
+
+<PrintLayout 
+  title={frontmatter.title || `${PROFILE.name} - Cover Letter`} 
+  pdfFilename={frontmatter.pdfFilename || `Cover_Letter_${PROFILE.name.replace(/\s+/g, '_')}.pdf`}
+>
+  <header class="doc-header">
+    <h1>{PROFILE.name}</h1>
+    <div class="contact-line">
+      <span>{PROFILE.title}</span> • 
+      <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a> • 
+      {SOCIAL_LINKS.map((s, idx) => (
+        <span>
+          <a href={s.url} target="_blank" rel="noopener noreferrer">{s.name}</a>
+          {idx < SOCIAL_LINKS.length - 1 ? ' • ' : ''}
+        </span>
+      ))}
+    </div>
+    <hr />
+  </header>
+
+  <Content />
+</PrintLayout>

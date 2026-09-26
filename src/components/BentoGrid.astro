@@ -1,0 +1,183 @@
+---
+import { CollectionEntry } from 'astro:content';
+
+type ProjectEntry = CollectionEntry<'projects'>;
+type BlogEntry = CollectionEntry<'blog'>;
+
+interface MetricItem {
+  value: string;
+  label: string;
+  description: string;
+}
+
+interface Props {
+  projects?: ProjectEntry[];
+  posts?: BlogEntry[];
+  technologies?: string[];
+  metric?: MetricItem;
+}
+
+const { 
+  projects = [], 
+  posts = [], 
+  technologies = [], 
+  metric = { value: '-400ms', label: 'Optimization', description: 'Latency reduction' }
+} = Astro.props;
+
+const topProject = projects[0];
+const topPost = posts[0];
+---
+
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+  <!-- Bento Grid Display -->
+  <div class="grid grid-cols-1 md:grid-cols-4 auto-rows-[200px] gap-4">
+    
+    <!-- 1. Dynamic Top Project Tile -->
+    <a 
+      id="bento-project-card"
+      href={topProject ? `/projects/${topProject.id}` : "/projects"} 
+      class="group relative col-span-1 md:col-span-2 md:row-span-2 rounded-3xl bg-surface border border-white/10 p-8 overflow-hidden flex flex-col justify-end transition-all hover:border-accent/50"
+    >
+      <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div class="relative z-10">
+        <p id="bento-project-domain" class="text-accent font-mono text-sm mb-3">
+          01 / {topProject?.data.domain || 'Featured System'}
+        </p>
+        <h3 id="bento-project-title" class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+          {topProject?.data.title || 'Global API Gateway'}
+        </h3>
+        <p id="bento-project-summary" class="text-neutral-400 max-w-sm">
+          {topProject?.data.summary || 'Distributed architecture and edge-first routing.'}
+        </p>
+      </div>
+    </a>
+
+    <!-- 2. Dynamic Metric Tile -->
+    <div class="col-span-1 md:col-span-2 md:row-span-1 rounded-3xl bg-surface border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden group">
+      <p id="bento-metric-label" class="text-neutral-400 text-sm uppercase tracking-wider mb-2 font-mono">
+        {topProject?.data.metrics?.[0]?.label || metric.label}
+      </p>
+      <div class="flex items-baseline gap-2">
+        <h2 id="bento-metric-value" class="text-5xl md:text-6xl font-bold text-white tracking-tighter">
+          {topProject?.data.metrics?.[0]?.value || metric.value}
+        </h2>
+      </div>
+      <p id="bento-metric-desc" class="text-sm text-neutral-500 mt-2">
+        {topProject?.data.metrics?.[0]?.description || metric.description}
+      </p>
+    </div>
+
+    <!-- 3. Dynamic Tech Stack Tile -->
+    <div class="col-span-1 md:col-span-1 md:row-span-2 rounded-3xl bg-surface border border-white/10 p-8 flex flex-col">
+      <h3 class="text-white font-bold mb-6 text-xl tracking-tight">Core Stack</h3>
+      <div id="bento-tech-list" class="flex flex-wrap gap-2">
+        {(topProject?.data.technologies || technologies.slice(0, 8)).map((tech) => (
+          <span class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-neutral-300 font-mono">
+            {tech}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- 4. Quick Action Tile -->
+    <a 
+      href="/projects" 
+      class="group col-span-1 md:col-span-1 md:row-span-1 rounded-3xl bg-accent text-black p-8 flex flex-col justify-between hover:scale-[0.98] transition-transform duration-200"
+    >
+      <div class="flex justify-between items-start">
+        <h3 class="font-bold text-2xl tracking-tight">Explore Systems</h3>
+        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </div>
+      <p class="font-medium text-sm opacity-80">Filter all case studies & logs.</p>
+    </a>
+
+    <!-- 5. Related Blog Tile -->
+    <a 
+      id="bento-blog-card"
+      href={topPost ? `/blog/${topPost.id}` : "/blog"} 
+      class="group relative col-span-1 md:col-span-2 md:row-span-1 rounded-3xl bg-surface border border-white/10 p-8 overflow-hidden flex flex-col justify-center transition-colors hover:border-white/30"
+    >
+      <div class="relative z-10 flex items-center justify-between">
+        <div>
+          <p class="text-neutral-400 font-mono text-sm mb-2">02 / Writing Log</p>
+          <h3 id="bento-blog-title" class="text-2xl font-bold text-white tracking-tight">
+            {topPost?.data.title || 'Zero-Trust Security'}
+          </h3>
+        </div>
+        <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Reacts strictly to hero custom event toggles -->
+<script is:inline define:vars={{ projects, posts }}>
+  document.addEventListener('astro:page-load', () => {
+    function updateContentByDomain(domain) {
+      // Find project matching selected domain
+      const activeProject = projects.find((p) => p.data.domain === domain) || projects[0];
+
+      // Find blog post matching domain keywords or tags
+      const activePost = posts.find((p) => 
+        p.data.tags?.some((tag) => domain.toLowerCase().includes(tag.toLowerCase()))
+      ) || posts[0];
+
+      // Update Project Tile UI
+      if (activeProject) {
+        const projCard = document.getElementById('bento-project-card');
+        const projDomain = document.getElementById('bento-project-domain');
+        const projTitle = document.getElementById('bento-project-title');
+        const projSummary = document.getElementById('bento-project-summary');
+
+        if (projCard) projCard.href = `/projects/${activeProject.id}`;
+        if (projDomain) projDomain.textContent = `01 / ${activeProject.data.domain}`;
+        if (projTitle) projTitle.textContent = activeProject.data.title;
+        if (projSummary) projSummary.textContent = activeProject.data.summary;
+
+        // Update Tech Stack Tile
+        const techList = document.getElementById('bento-tech-list');
+        if (techList && activeProject.data.technologies) {
+          techList.innerHTML = activeProject.data.technologies
+            .map((tech) => `<span class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-neutral-300 font-mono">${tech}</span>`)
+            .join('');
+        }
+
+        // Update Metric Tile
+        const metric = activeProject.data.metrics?.[0];
+        if (metric) {
+          const metricLabel = document.getElementById('bento-metric-label');
+          const metricValue = document.getElementById('bento-metric-value');
+          const metricDesc = document.getElementById('bento-metric-desc');
+
+          if (metricLabel) metricLabel.textContent = metric.label;
+          if (metricValue) metricValue.textContent = metric.value;
+          if (metricDesc) metricDesc.textContent = metric.description;
+        }
+      }
+
+      // Update Blog Tile UI
+      if (activePost) {
+        const blogCard = document.getElementById('bento-blog-card');
+        const blogTitle = document.getElementById('bento-blog-title');
+
+        if (blogCard) blogCard.href = `/blog/${activePost.id}`;
+        if (blogTitle) blogTitle.textContent = activePost.data.title;
+      }
+    }
+
+    // Listen for custom event emitted by KineticHero.astro
+    window.addEventListener('hero-domain-change', (e) => {
+      if (e.detail?.domain) {
+        updateContentByDomain(e.detail.domain);
+      }
+    });
+  });
+</script>

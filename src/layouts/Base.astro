@@ -2,6 +2,9 @@
 import '../styles/global.css'; // Adjust path if your CSS is at src/global.css
 import SearchTrigger from '../components/SearchTrigger.astro';
 import SearchModal from '../components/SearchModal.astro';
+import { ClientRouter } from 'astro:transitions';
+import TelemetryWidget from '../components/TelemetryWidget.astro';
+import CmdKModal from '../components/CmdKModal.astro';
 
 interface Props {
   title?: string;
@@ -17,7 +20,7 @@ const currentPath = Astro.url.pathname;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com');
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark h-full bg-[#09090b] text-[#fafafa] antialiased">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,11 +45,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
     <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-ui.js" is:inline></script>
     <link rel="alternate" type="application/rss+xml" title="Habin's Blog" href="/rss.xml" />
+    <ClientRouter />
   </head>
-  <body>
+  <body class="min-h-full flex flex-col overflow-x-clip selection:bg-[#ccff00] selection:text-black">
     <header class="header">
       <nav class="nav">
-        <a href="/" class="nav-brand">habin<span class="brand-accent">.dev</span></a>
+        <a href="/" class="nav-brand">habin<span class="brand-accent">.quality</span></a>
         
         <div class="nav-links">
           <a href="/about" class={currentPath.startsWith('/about') ? 'active' : ''}>About</a>
@@ -64,11 +68,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
 
     <footer class="footer">
       <div class="footer-content">
-        <p>© 2026 Habin Prasad • Built with Astro 7 & Cloudflare Pages</p>
+        <p>© 2026 Habin Prasad • gatedqass.in </p>
       </div>
     </footer>
 
 
     <SearchModal />
+    <TelemetryWidget />
+    <CmdKModal />
   </body>
 </html>

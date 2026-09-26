@@ -1,60 +1,90 @@
 ---
 // src/pages/index.astro
 import Base from '../layouts/Base.astro';
-import ExecutiveHero from '../components/ExecutiveHero.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
+import KineticHero from '../components/KineticHero.astro';
+import BentoGrid from '../components/BentoGrid.astro';
 
-// Fetch top featured case studies
-const featuredProjects = (await getCollection('projects'))
-  .filter((p) => p.data.featured)
-  .slice(0, 2);
+const projects = await getCollection('projects');
+const blogPosts = await getCollection('blog');
+
+// Map actual project domains and metrics to KineticHero options
+const domainMap: Record<string, { label: string; text: string; desc: string }> = {
+  'API & Microservices': {
+    label: 'Scale',
+    text: 'scalable infrastructure.',
+    desc: "When traffic spikes, systems shouldn't sweat. I build distributed, fault-tolerant architectures that stay up when it matters."
+  },
+  'Security & Auth': {
+    label: 'Security',
+    text: 'zero-trust environments.',
+    desc: 'Data breaches end companies. I implement enterprise-grade rate limiting, bot protection, and strict API validation.'
+  },
+  'Performance Optimization': {
+    label: 'Speed',
+    text: 'sub-100ms latency.',
+    desc: 'Milliseconds cost millions. I optimize caching layers and database queries to deliver instant global responses.'
+  },
+  'Automation & CI/CD': {
+    label: 'Automation',
+    text: 'seamless deployment pipelines.',
+    desc: 'Manual deployments slow down engineering. I automate CI/CD workflows and infrastructure provisioning for reliable releases.'
+  },
+  'Cloud Architecture': {
+    label: 'Cloud',
+    text: 'resilient cloud systems.',
+    desc: 'Designing highly available multi-region architecture tailored for high throughput and zero downtime.'
+  }
+};
+
+// Extract unique domains present in actual project content
+const projectDomains = [...new Set(projects.map((p) => p.data.domain))];
+
+// Build options array dynamically based on available content
+const heroOptions = projectDomains.map((domain) => {
+  const config = domainMap[domain] || {
+    label: domain,
+    text: `${domain.toLowerCase()} solutions.`,
+    desc: `Architecting robust systems and engineering workflows specialized in ${domain}.`
+  };
+
+  return {
+    key: domain,
+    label: config.label,
+    text: config.text,
+    desc: config.desc
+  };
+});
+
+// Fallback if collections are empty
+if (heroOptions.length === 0) {
+  heroOptions.push({
+    key: 'API & Microservices',
+    label: 'Scale',
+    text: 'scalable infrastructure.',
+    desc: "When traffic spikes, systems shouldn't sweat. I build distributed architectures that stay up when it matters."
+  });
+}
+
+// Tech stack aggregation
+const allTechnologies = [...new Set(projects.flatMap((p) => p.data.technologies || []))];
+
+// Primary metric aggregation
+const primaryMetric = projects.flatMap((p) => p.data.metrics || [])[0] || {
+  value: '-400ms',
+  label: 'p99 API Latency',
+  description: 'Reduction in response time via edge Redis caching layer.'
+};
 ---
 
 <Base title="Head of Automation & Tech Lead">
   <div class="container-wide">
-    <!-- Executive Hero Section -->
-    <ExecutiveHero />
-
-    <!-- Featured Case Studies Showcase -->
-    <section class="home-section">
-      <div class="section-header">
-        <h2>Featured Architecture & Platforms</h2>
-        <a href="/projects" class="view-all-link">View All Systems →</a>
-      </div>
-
-      <div class="projects-grid">
-        {featuredProjects.map((project) => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-    </section>
+    <KineticHero options={heroOptions} />
+    <BentoGrid 
+      projects={projects} 
+      posts={blogPosts}
+      technologies={allTechnologies}
+      metric={primaryMetric}
+    />
   </div>
 </Base>
-
-<style>
-  .home-section {
-    margin-top: 4rem;
-  }
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
-  .section-header h2 {
-    font-size: 1.5rem;
-    margin: 0;
-  }
-  .view-all-link {
-    font-size: 0.9rem;
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
-  }
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    gap: 1.5rem;
-  }
-</style>
