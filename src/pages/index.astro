@@ -1,9 +1,10 @@
 ---
 // src/pages/index.astro
 import Base from '../layouts/Base.astro';
-import ExecutiveHero from '../components/ExecutiveHero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
+import KineticHero from '../components/KineticHero.astro';
+import BentoGrid from '../components/BentoGrid.astro';
 
 // Fetch top featured case studies
 const featuredProjects = (await getCollection('projects'))
@@ -14,8 +15,8 @@ const featuredProjects = (await getCollection('projects'))
 <Base title="Head of Automation & Tech Lead">
   <div class="container-wide">
     <!-- Executive Hero Section -->
-    <ExecutiveHero />
-
+    <KineticHero />
+    <BentoGrid />
     <!-- Featured Case Studies Showcase -->
     <section class="home-section">
       <div class="section-header">

@@ -1,3 +1,22 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+
+@theme {
+  --color-background: #09090b;
+  --color-surface: #18181b;
+  --color-accent: #ccff00;
+
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+}
+
+/* 3. Global Box-Sizing & Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
 :root {
   --bg: #0b0f19;
   --surface: rgba(17, 24, 39, 0.65);
@@ -12,8 +31,8 @@
   
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --max-w: 768px;
-  --radius: 12px;
+  --max-w: 87%;
+  --radius: 2%;
 }
 
 /* Reset & Layout */
@@ -596,4 +615,136 @@ kbd {
   font-size: 0.85rem;
   margin-top: 0.35rem;
   line-height: 1.4;
+}
+
+/* src/styles/global.css */
+
+/* 1. Prevent box-sizing layout shifts */
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+/* 2. Prevent horizontal scrolling globally */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* 3. Make all images and media fluid */
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 4. Fix code block horizontal overflow in Markdown/Prose */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+  word-wrap: normal;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+code {
+  word-break: break-word;
+}
+
+/* 5. Make tables scrollable on small screens */
+table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* 6. Typography adjustments for mobile */
+.prose {
+  max-width: 100% !important;
+  word-break: break-word;
+}
+
+
+/* 4. Root & Document Setup */
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  min-block-size: 100vh;
+  text-rendering: optimizeSpeed;
+}
+
+/* 5. Fluid Responsive Media */
+img,
+svg,
+video,
+canvas,
+picture {
+  display: block;
+  max-width: 100%;
+  max-inline-size: 100%;
+  height: auto;
+  block-size: auto;
+}
+
+/* 6. Code Blocks & Data Tables */
+pre {
+  max-width: 100%;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+code {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+table {
+  display: block;
+  max-width: 100%;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 7. Typography & Overflow Protection */
+p, h1, h2, h3, h4, h5, h6, .prose {
+  max-width: 100% !important;
+  inline-size: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 8. Mobile Device Adjustments */
+@media (max-width: 640px) {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  pre {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
 }

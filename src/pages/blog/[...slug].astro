@@ -56,19 +56,6 @@ const ogImageUrl = `/og/${slug}.png`;
 </Base>
 
 <style>
-  .article-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-
-  /* 2-Column Desktop Grid with Sticky Sidebar */
-  @media (min-width: 1024px) {
-    .article-layout {
-      grid-template-columns: minmax(0, 1fr) 260px;
-    }
-  }
-
   .post-header {
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--surface-border);
@@ -88,8 +75,38 @@ const ogImageUrl = `/og/${slug}.png`;
     margin: 0;
   }
 
+  /* 1. Mobile Layout (< 1024px) */
+  .article-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .sidebar,
   .sticky-wrapper {
-    position: sticky;
-    top: 5rem;
+    position: relative;
+    top: auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* 2. Desktop Layout (>= 1024px) - Non-sticky 2-Column Grid */
+  @media (min-width: 1024px) {
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+  }
+
+  /* Force child TOC component overrides if needed */
+  .sidebar :global(nav),
+  .sidebar :global(.toc),
+  .sidebar :global(aside) {
+    position: relative !important;
+    top: auto !important;
   }
 </style>
