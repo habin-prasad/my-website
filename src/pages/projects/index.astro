@@ -3,60 +3,101 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
-export const prerender = true; // Ensures static generation if operating in hybrid/SSR mode
+export const prerender = true;
 
 const allProjects = (await getCollection('projects')) || [];
 const featuredProjects = allProjects.filter((p) => p?.data?.featured === true);
 const otherProjects = allProjects.filter((p) => !p?.data?.featured);
+const domains = [...new Set(allProjects.map((p) => p.data.domain).filter(Boolean))];
 ---
 
 <PageLayout 
   title="Engineering Leadership & Systems" 
-  subtitle="Architectural case studies, from-scratch platforms, and strategic automation initiatives."
+  subtitle="Architectural case studies, infrastructure platforms, and automated developer tooling."
 >
-  {featuredProjects.length > 0 && (
-    <section class="projects-section">
-      <h2>Featured Case Studies</h2>
-      <div class="projects-grid">
-        {featuredProjects.map((project) => (
-          <ProjectCard project={project} />
-        ))}
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    
+    <!-- Domain Filter Bar -->
+    {domains.length > 0 && (
+      <div class="p-6 rounded-3xl bg-surface border border-white/10 glass-card">
+        <span class="text-xs font-mono text-accent uppercase tracking-wider block mb-2">FILTER BY DOMAIN</span>
+        <div class="flex flex-wrap gap-2" id="project-domain-filters">
+          <button data-domain="all" class="project-filter-btn active px-4 py-2 rounded-full border border-accent bg-accent/10 text-accent font-mono text-xs transition-all">
+            [ All Systems ]
+          </button>
+          {domains.map((domain) => (
+            <button data-domain={domain} class="project-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-neutral-400 font-mono text-xs transition-all hover:text-white">
+              {domain}
+            </button>
+          ))}
+        </div>
       </div>
-    </section>
-  )}
+    )}
 
-  {otherProjects.length > 0 && (
-    <section class="projects-section">
-      <h2>{featuredProjects.length > 0 ? "Other Initiatives" : "All Initiatives"}</h2>
-      <div class="projects-grid">
-        {otherProjects.map((project) => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-    </section>
-  )}
+    {/* Featured Projects */}
+    {featuredProjects.length > 0 && (
+      <section class="space-y-6 project-group" data-group="featured">
+        <h2 class="text-xl font-bold text-white font-mono flex items-center gap-2">
+          <span class="text-accent">01 /</span> FEATURED CASE STUDIES
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {featuredProjects.map((project) => (
+            <div class="project-item" data-domain={project.data.domain}>
+              <ProjectCard project={project} />
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
 
-  {allProjects.length === 0 && (
-    <p class="empty-state">No projects found. Check <code>src/content/projects/</code>.</p>
-  )}
+    {/* Other Projects */}
+    {otherProjects.length > 0 && (
+      <section class="space-y-6 project-group" data-group="other">
+        <h2 class="text-xl font-bold text-white font-mono flex items-center gap-2">
+          <span class="text-accent">02 /</span> ADDITIONAL INITIATIVES
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {otherProjects.map((project) => (
+            <div class="project-item" data-domain={project.data.domain}>
+              <ProjectCard project={project} />
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {allProjects.length === 0 && (
+      <p class="text-neutral-500 font-mono text-sm italic">No projects found in content collection.</p>
+    )}
+  </div>
+
+  <script is:inline>
+    document.addEventListener('astro:page-load', () => {
+      const buttons = document.querySelectorAll('.project-filter-btn');
+      const items = document.querySelectorAll('.project-item');
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const selectedDomain = btn.getAttribute('data-domain');
+
+          buttons.forEach((b) => {
+            b.classList.remove('border-accent', 'bg-accent/10', 'text-accent');
+            b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
+          });
+
+          btn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
+          btn.classList.add('border-accent', 'bg-accent/10', 'text-accent');
+
+          items.forEach((item) => {
+            const itemDomain = item.getAttribute('data-domain');
+            if (selectedDomain === 'all' || itemDomain === selectedDomain) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
 </PageLayout>
-
-<style>
-  .projects-section {
-    margin-bottom: 2.5rem;
-  }
-  .projects-section h2 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--accent);
-  }
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-  }
-  .empty-state {
-    color: var(--muted);
-    font-style: italic;
-  }
-</style>

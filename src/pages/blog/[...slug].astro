@@ -3,10 +3,8 @@ import Base from '../../layouts/Base.astro';
 import ProgressBar from '../../components/ProgressBar.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import CodeBlockScript from '../../components/CodeBlockScript.astro';
-import { getCollection, render } from 'astro:content';
 import ReactionButton from '../../components/ReactionButton.astro';
-import { env } from "cloudflare:workers"
-
+import { getCollection, render } from 'astro:content';
 
 export const prerender = true;
 
@@ -15,7 +13,6 @@ export async function getStaticPaths() {
   return posts
     .filter(p => !p.data.draft)
     .map(post => {
-      // Derive the slug here so it's explicitly passed in props
       const postSlug = post.slug ?? post.id.replace(/\.[^/.]+$/, "");
       return {
         params: { slug: postSlug },
@@ -25,8 +22,6 @@ export async function getStaticPaths() {
 }
 
 const { post, slug } = Astro.props;
-
-// headings is returned natively by render()
 const { Content, headings } = await render(post);
 const ogImageUrl = `/og/${slug}.png`;
 ---
@@ -34,79 +29,56 @@ const ogImageUrl = `/og/${slug}.png`;
 <Base title={post.data.title} description={post.data.description} image={ogImageUrl}>
   <ProgressBar />
 
-  <div class="article-layout">
-    <article class="post-content">
-      <header class="post-header">
-        <h1>{post.data.title}</h1>
-        <p class="post-date">{post.data.pubDate.toDateString()}</p>
-      </header>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
+      
+      <!-- Article Content Body -->
+      <article class="lg:col-span-3 space-y-8">
+        <header class="p-8 rounded-3xl bg-surface border border-white/10 glass-card space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-neutral-400">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </time>
+            <span>ENGINEERING JOURNAL</span>
+          </div>
 
-      <Content />
-      <ReactionButton slug={slug} />
-    </article>
+          <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">
+            {post.data.title}
+          </h1>
 
-    <aside class="sidebar">
-      <div class="sticky-wrapper">
-        <TableOfContents headings={headings} />
-      </div>
-    </aside>
+          <p class="text-lg text-neutral-300 leading-relaxed">
+            {post.data.description}
+          </p>
+
+          {post.data.tags && post.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+              {post.data.tags.map((tag: string) => (
+                <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5 font-mono text-xs text-accent">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <div class="p-8 md:p-12 rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent">
+          <Content />
+        </div>
+
+        <div class="pt-6">
+          <ReactionButton slug={slug} />
+        </div>
+      </article>
+
+      <!-- Sticky Table of Contents Sidebar -->
+      <aside class="lg:col-span-1 lg:sticky lg:top-24 space-y-6">
+        <div class="p-6 rounded-3xl bg-surface border border-white/10 glass-card">
+          <TableOfContents headings={headings} />
+        </div>
+      </aside>
+
+    </div>
   </div>
 
   <CodeBlockScript />
 </Base>
-
-<style>
-  .post-header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--surface-border);
-    padding-bottom: 1.5rem;
-  }
-
-  .post-header h1 {
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .post-date {
-    font-family: var(--font-mono);
-    color: var(--muted);
-    font-size: 0.85rem;
-    margin: 0;
-  }
-
-  /* 1. Mobile Layout (< 1024px) */
-  .article-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    width: 100%;
-  }
-
-  .sidebar,
-  .sticky-wrapper {
-    position: relative;
-    top: auto;
-    height: auto;
-    max-height: none;
-    overflow: visible;
-  }
-
-  /* 2. Desktop Layout (>= 1024px) - Non-sticky 2-Column Grid */
-  @media (min-width: 1024px) {
-    .article-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 260px;
-      gap: 2.5rem;
-      align-items: start;
-    }
-  }
-
-  /* Force child TOC component overrides if needed */
-  .sidebar :global(nav),
-  .sidebar :global(.toc),
-  .sidebar :global(aside) {
-    position: relative !important;
-    top: auto !important;
-  }
-</style>

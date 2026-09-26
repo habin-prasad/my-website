@@ -1,63 +1,56 @@
 ---
 // src/components/KineticHero.astro
+export interface HeroOption {
+  key: string;      // Matches project.data.domain (e.g., 'API & Microservices')
+  label: string;    // Display text on command palette button (e.g., 'Scale')
+  text: string;     // Hero headline accent text (e.g., 'scalable infrastructure.')
+  desc: string;     // Hero subheadline paragraph
+}
+
+interface Props {
+  options: HeroOption[];
+}
+
+const { options = [] } = Astro.props;
+const initialOption = options[0];
 ---
 
 <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-  <!-- Ambient background glow (Sprezzatura touch) -->
   <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/20 blur-[120px] rounded-full pointer-events-none opacity-40"></div>
 
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8">
       You are here because you need <br class="hidden md:block" />
-      <span id="hero-dynamic-text" class="text-accent transition-opacity duration-200">scalable infrastructure.</span>
+      <span id="hero-dynamic-text" class="text-accent transition-opacity duration-200">
+        {initialOption?.text || 'scalable infrastructure.'}
+      </span>
     </h1>
 
-    <!-- The Command Palette Toggles -->
+    <!-- Command Palette Toggles mapped directly from content collections -->
     <div class="flex flex-wrap gap-3 mb-8" id="hero-toggles">
-      <button 
-        data-target="scale" 
-        class="hero-btn active px-6 py-2 rounded-full border border-accent bg-accent/10 text-accent font-medium transition-colors"
-      >
-        Scale
-      </button>
-      <button 
-        data-target="security" 
-        class="hero-btn px-6 py-2 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-colors"
-      >
-        Security
-      </button>
-      <button 
-        data-target="speed" 
-        class="hero-btn px-6 py-2 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-colors"
-      >
-        Speed
-      </button>
+      {options.map((option, idx) => (
+        <button 
+          data-key={option.key}
+          data-text={option.text}
+          data-desc={option.desc}
+          class={`hero-btn px-6 py-2 rounded-full border font-medium transition-colors ${
+            idx === 0 
+              ? 'border-accent bg-accent/10 text-accent' 
+              : 'border-white/10 bg-white/5 text-neutral-400 hover:text-white'
+          }`}
+        >
+          {option.label}
+        </button>
+      ))}
     </div>
 
     <p id="hero-description" class="text-xl md:text-2xl text-neutral-400 max-w-2xl leading-relaxed transition-opacity duration-200">
-      When traffic spikes, systems shouldn't sweat. I build distributed, fault-tolerant architectures using edge compute that stay up when it matters.
+      {initialOption?.desc || "When traffic spikes, systems shouldn't sweat."}
     </p>
   </div>
 </section>
 
 <script>
-  // 1. The data payload tailored for hiring managers
-  const data = {
-    scale: {
-      text: "scalable infrastructure.",
-      desc: "When traffic spikes, systems shouldn't sweat. I build distributed, fault-tolerant architectures using edge compute that stay up when it matters."
-    },
-    security: {
-      text: "zero-trust environments.",
-      desc: "Data breaches end companies. I implement enterprise-grade rate limiting, Turnstile bot protection, and strict API validation."
-    },
-    speed: {
-      text: "sub-100ms latency.",
-      desc: "Milliseconds cost millions. I optimize caching layers and database queries to deliver instant global responses."
-    }
-  };
-
-  // 2. Wrap logic in astro:page-load so it survives View Transition navigations
   document.addEventListener('astro:page-load', () => {
     const buttons = document.querySelectorAll('.hero-btn');
     const dynamicText = document.getElementById('hero-dynamic-text');
@@ -65,34 +58,43 @@
 
     if (!buttons.length || !dynamicText || !description) return;
 
-    buttons.forEach(btn => {
+    buttons.forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const target = (e.currentTarget as HTMLElement).dataset.target;
-        if (!target) return;
+        const targetBtn = e.currentTarget as HTMLButtonElement;
+        const selectedKey = targetBtn.dataset.key;
+        const text = targetBtn.dataset.text;
+        const desc = targetBtn.dataset.desc;
 
-        // Reset all buttons to inactive state
-        buttons.forEach(b => {
+        if (!selectedKey) return;
+
+        // Reset state across buttons
+        buttons.forEach((b) => {
           b.classList.remove('border-accent', 'bg-accent/10', 'text-accent');
           b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
         });
 
-        // Set clicked button to active state
-        const currentBtn = e.currentTarget as HTMLElement;
-        currentBtn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
-        currentBtn.classList.add('border-accent', 'bg-accent/10', 'text-accent');
+        // Set active button
+        targetBtn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
+        targetBtn.classList.add('border-accent', 'bg-accent/10', 'text-accent');
 
-        // Fade out text
+        // Animate text changes
         dynamicText.style.opacity = '0';
         description.style.opacity = '0';
-        
-        // Wait for fade out, swap text, then fade in
+
         setTimeout(() => {
-          dynamicText.textContent = data[target].text;
-          description.textContent = data[target].desc;
-          
+          if (text) dynamicText.textContent = text;
+          if (desc) description.textContent = desc;
+
           dynamicText.style.opacity = '1';
           description.style.opacity = '1';
-        }, 200); // 200ms matches the Tailwind transition-opacity duration
+        }, 200);
+
+        // Dispatch custom domain change event to update BentoGrid
+        window.dispatchEvent(
+          new CustomEvent('hero-domain-change', {
+            detail: { domain: selectedKey }
+          })
+        );
       });
     });
   });

@@ -1,16 +1,309 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+import { SOCIAL_LINKS } from '../config/social';
+
+const projects = await getCollection('projects');
+
+// Aggregate total technologies and unique metrics across all project content
+const allTechnologies = [...new Set(projects.flatMap((p) => p.data.technologies || []))];
+const projectCount = projects.length;
+
+const careerModes = [
+  {
+    key: 'architect',
+    label: 'Systems Architect',
+    headline: 'Designing resilient distributed infrastructure.',
+    summary: 'Focused on multi-region edge deployment, fault-tolerant API gateways, and minimizing p99 latency under heavy traffic spikes.',
+    metrics: [
+      { value: '99.99%', label: 'Target Uptime' },
+      { value: '<100ms', label: 'Global Edge Latency' },
+      { value: 'Zero-Trust', label: 'Security Model' }
+    ]
+  },
+  {
+    key: 'lead',
+    label: 'Engineering Lead',
+    headline: 'Scaling teams, automation, and delivery standards.',
+    summary: 'Passionate about setting up robust CI/CD pipelines, automated testing gates, and fostering a high-ownership engineering culture.',
+    metrics: [
+      { value: '10x', label: 'Deployment Frequency' },
+      { value: '-80%', label: 'Manual Ops Friction' },
+      { value: '100%', label: 'Automated CI/CD' }
+    ]
+  },
+  {
+    key: 'builder',
+    label: 'Hands-on Engineer',
+    headline: 'Shipping clean, type-safe, performant code.',
+    summary: 'Deeply comfortable across modern web frameworks, system optimization, microservice orchestration, and cloud infrastructure as code.',
+    metrics: [
+      { value: `${projectCount}+`, label: 'Production Systems' },
+      { value: `${allTechnologies.length}+`, label: 'Core Tools & Stacks' },
+      { value: 'Type-Safe', label: 'End-to-End Specs' }
+    ]
+  }
+];
+
+const initialMode = careerModes[0];
 ---
 
 <PageLayout 
   title="About Me" 
-  subtitle="Software Engineer focused on high-scale systems and web platform infrastructure."
+  subtitle="Engineering Lead & Systems Architect focused on high-scale web platform infrastructure."
 >
-  <p>Bio content goes here without repeating Base or glass-card boilerplate...</p>
-  <h2>Profiles</h2>
-  <ul>
-    <li><a href="https://github.com/yourusername">GitHub</a></li>
-    <li><a href="https://linkedin.com/in/yourprofile">LinkedIn</a></li>
-    <li><a href="https://twitter.com/yourhandle">Twitter/X</a></li>
-  </ul>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- Mode Selector Toggles -->
+    <div class="mb-12 p-6 rounded-3xl bg-surface border border-white/10 glass-card">
+      <span class="text-xs font-mono text-accent uppercase tracking-wider block mb-2">
+        OPERATIONAL VIEW MODE
+      </span>
+      <h2 class="text-lg font-bold text-white mb-4">Select Lens:</h2>
+      
+      <div class="flex flex-wrap gap-3" id="about-mode-toggles">
+        {careerModes.map((mode, idx) => (
+          <button
+            data-key={mode.key}
+            data-headline={mode.headline}
+            data-summary={mode.summary}
+            data-metrics={JSON.stringify(mode.metrics)}
+            class={`about-mode-btn px-5 py-2.5 rounded-full border text-xs md:text-sm font-mono transition-all cursor-pointer ${
+              idx === 0 
+                ? 'border-accent bg-accent/10 text-accent font-bold' 
+                : 'border-white/10 bg-white/5 text-neutral-400 hover:text-white'
+            }`}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Dynamic Hero Showcase for Selected Lens -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-16">
+      
+      <!-- Summary Block -->
+      <div class="lg:col-span-2 p-8 md:p-10 rounded-3xl bg-surface border border-white/10 flex flex-col justify-between">
+        <div>
+          <span class="text-accent font-mono text-xs tracking-widest uppercase block mb-3">
+            01 / PHILOSOPHY & PROFILE
+          </span>
+          <h3 id="about-headline" class="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight transition-opacity duration-200">
+            {initialMode.headline}
+          </h3>
+          <p id="about-summary" class="text-neutral-300 text-lg leading-relaxed transition-opacity duration-200 max-w-2xl">
+            {initialMode.summary}
+          </p>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-white/10 flex flex-wrap gap-4 text-xs font-mono text-neutral-400">
+          <span>STATUS: OPERATIONAL</span>
+          <span>•</span>
+          <span>FOCUS: SCALABILITY & AUTOMATION</span>
+        </div>
+      </div>
+
+      <!-- Dynamic Metrics Grid -->
+      <div class="p-8 rounded-3xl bg-surface border border-white/10 flex flex-col justify-around gap-6">
+        {initialMode.metrics.map((m, idx) => (
+          <div class="border-b border-white/5 pb-4 last:border-none last:pb-0">
+            <p id={`metric-label-${idx}`} class="text-neutral-400 text-xs font-mono uppercase tracking-wider mb-1">
+              {m.label}
+            </p>
+            <p id={`metric-value-${idx}`} class="text-4xl font-bold text-white tracking-tight">
+              {m.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Core Engineering Philosophy Bento -->
+    <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">Core Engineering Directives</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+      <div class="p-8 rounded-3xl bg-surface border border-white/10 hover:border-accent/40 transition-colors">
+        <div class="w-10 h-10 rounded-2xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center font-mono font-bold mb-6">
+          01
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Edge-First Architecture</h3>
+        <p class="text-neutral-400 text-sm leading-relaxed">
+          Move compute, validation, and static caching as close to the user as possible to reduce latency and infrastructure load.
+        </p>
+      </div>
+
+      <div class="p-8 rounded-3xl bg-surface border border-white/10 hover:border-accent/40 transition-colors">
+        <div class="w-10 h-10 rounded-2xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center font-mono font-bold mb-6">
+          02
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Automation over Ritual</h3>
+        <p class="text-neutral-400 text-sm leading-relaxed">
+          If a process happens twice, script it. Continuous integration and infrastructure code prevent human error and boost delivery speed.
+        </p>
+      </div>
+
+      <div class="p-8 rounded-3xl bg-surface border border-white/10 hover:border-accent/40 transition-colors">
+        <div class="w-10 h-10 rounded-2xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center font-mono font-bold mb-6">
+          03
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Zero-Trust Boundaries</h3>
+        <p class="text-neutral-400 text-sm leading-relaxed">
+          Assume external inputs and interior systems are compromised. Enforce strict type validation, rate limits, and short-lived tokens.
+        </p>
+      </div>
+    </div>
+
+    <!-- Dynamic Tech Proficiency Matrix -->
+    {allTechnologies.length > 0 && (
+      <div class="mb-16">
+        <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">Active Technology Stack</h2>
+        <div class="flex flex-wrap gap-2 p-6 rounded-3xl bg-surface border border-white/10">
+          {allTechnologies.map((tech) => (
+            <span class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-xs text-neutral-200 font-mono hover:border-accent hover:text-accent transition-colors">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+    <!-- Official Credentials / Live Printable ATS Documents -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">Official Documents</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Interactive Resume Card -->
+        <div class="p-6 rounded-2xl bg-surface border border-white/10 flex flex-col justify-between">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <span class="text-xs font-mono text-accent uppercase block mb-1">ATS-OPTIMIZED</span>
+              <h3 class="text-xl font-bold text-white">Interactive Resume</h3>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center">
+              📄
+            </div>
+          </div>
+          <p class="text-sm text-neutral-400 mb-6">
+            Live web version built for ATS parser compatibility and clean single-page PDF generation.
+          </p>
+          <div class="flex items-center gap-3">
+            <a 
+              href="/resume" 
+              class="flex-1 text-center py-2.5 px-4 rounded-xl border border-white/10 bg-white/5 text-xs font-mono text-white hover:border-white/30 transition-all"
+            >
+              View Document
+            </a>
+            <a 
+              href="/resume?download=true" 
+              target="_blank"
+              class="flex-1 text-center py-2.5 px-4 rounded-xl bg-accent text-neutral-950 font-mono text-xs font-bold hover:bg-accent/90 transition-all"
+            >
+              Save as PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Interactive Cover Letter Card -->
+        <div class="p-6 rounded-2xl bg-surface border border-white/10 flex flex-col justify-between">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <span class="text-xs font-mono text-accent uppercase block mb-1">ARCHITECTURAL BRIEF</span>
+              <h3 class="text-xl font-bold text-white">Cover Letter</h3>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center">
+              ✉️
+            </div>
+          </div>
+          <p class="text-sm text-neutral-400 mb-6">
+            Executive introduction focusing on leadership methodology and systems architecture capabilities.
+          </p>
+          <div class="flex items-center gap-3">
+            <a 
+              href="/cover-letter" 
+              class="flex-1 text-center py-2.5 px-4 rounded-xl border border-white/10 bg-white/5 text-xs font-mono text-white hover:border-white/30 transition-all"
+            >
+              View Document
+            </a>
+            <a 
+              href="/cover-letter?download=true" 
+              target="_blank"
+              class="flex-1 text-center py-2.5 px-4 rounded-xl bg-accent text-neutral-950 font-mono text-xs font-bold hover:bg-accent/90 transition-all"
+            >
+              Save as PDF
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- Operational Profiles / Social Links Grid (Driven via socials.ts) -->
+    <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">Connect & Profiles</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {SOCIAL_LINKS.map((social) => (
+        <a 
+          href={social.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="group p-6 rounded-2xl bg-surface border border-white/10 hover:border-accent/50 transition-all flex justify-between items-center"
+        >
+          <div>
+            <span class="text-xs font-mono text-neutral-500 block mb-1">{social.label}</span>
+            <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors">{social.name}</h3>
+          </div>
+          <svg class="w-6 h-6 text-neutral-400 group-hover:text-accent group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      ))}
+    </div>
+
+  </section>
+
+  <!-- Interactive State Script -->
+  <script is:inline>
+    document.addEventListener('astro:page-load', () => {
+      const buttons = document.querySelectorAll('.about-mode-btn');
+      const headline = document.getElementById('about-headline');
+      const summary = document.getElementById('about-summary');
+
+      if (!buttons.length || !headline || !summary) return;
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget;
+          const newHeadline = target.getAttribute('data-headline');
+          const newSummary = target.getAttribute('data-summary');
+          const newMetrics = JSON.parse(target.getAttribute('data-metrics') || '[]');
+
+          buttons.forEach((b) => {
+            b.classList.remove('border-accent', 'bg-accent/10', 'text-accent', 'font-bold');
+            b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
+          });
+
+          target.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
+          target.classList.add('border-accent', 'bg-accent/10', 'text-accent', 'font-bold');
+
+          headline.style.opacity = '0';
+          summary.style.opacity = '0';
+
+          setTimeout(() => {
+            if (newHeadline) headline.textContent = newHeadline;
+            if (newSummary) summary.textContent = newSummary;
+
+            newMetrics.forEach((m, idx) => {
+              const labelEl = document.getElementById(`metric-label-${idx}`);
+              const valueEl = document.getElementById(`metric-value-${idx}`);
+              if (labelEl) labelEl.textContent = m.label;
+              if (valueEl) valueEl.textContent = m.value;
+            });
+
+            headline.style.opacity = '1';
+            summary.style.opacity = '1';
+          }, 200);
+        });
+      });
+    });
+  </script>
 </PageLayout>

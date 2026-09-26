@@ -1,0 +1,183 @@
+---
+interface Props {
+  title: string;
+  pdfFilename: string;
+}
+
+const { title, pdfFilename } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #111827;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+    
+    .print-bar {
+      max-width: 800px;
+      margin: 0 auto 1.5rem auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-print {
+      background-color: #000;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .document-body {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 3.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Standard ATS Markdown Element Styles */
+    .document-body h1 {
+      font-size: 2rem;
+      margin: 0 0 0.25rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .document-body h2 {
+      font-size: 1.1rem;
+      border-bottom: 1.5px solid #111827;
+      padding-bottom: 0.25rem;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .document-body h3 {
+      font-size: 1rem;
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .document-body p, 
+    .document-body li {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #1f2937;
+    }
+
+    .document-body ul {
+      padding-left: 1.25rem;
+      margin-top: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .document-body hr {
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+      margin: 1.5rem 0;
+    }
+
+    .document-body a {
+      color: #111827;
+      text-decoration: underline;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .print-bar {
+        display: none !important;
+      }
+      .document-body {
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      @page {
+        margin: 1.5cm;
+        size: letter;
+      }
+    }
+      .doc-header h1 {
+    font-size: 2rem;
+    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+  .contact-line {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+  }
+  .contact-line a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  hr {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 1.25rem 0;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="print-bar">
+    <a href="/about" style="color: #4b5563; text-decoration: none; font-size: 0.875rem;">← Back to About Page</a>
+    <button id="save-pdf-btn" class="btn-print">Save / Print as PDF</button>
+  </div>
+
+  <main class="document-body">
+    <slot />
+  </main>
+
+  <script is:inline data-filename={pdfFilename}>
+    const targetFilename = document.currentScript.getAttribute('data-filename') || 'Document.pdf';
+    const saveBtn = document.getElementById('save-pdf-btn');
+
+    function triggerPdfSave() {
+      const originalTitle = document.title;
+      document.title = targetFilename.replace('.pdf', '');
+      window.print();
+      
+      setTimeout(() => {
+        document.title = originalTitle;
+      }, 1000);
+    }
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', triggerPdfSave);
+    }
+
+    if (new URLSearchParams(window.location.search).get('download') === 'true') {
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(triggerPdfSave, 500);
+      });
+    }
+  </script>
+</body>
+</html>

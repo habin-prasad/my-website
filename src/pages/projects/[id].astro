@@ -2,6 +2,7 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 export const prerender = true;
+
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
   return projects.map((project) => ({
@@ -23,82 +24,101 @@ if (!project) {
 
 const { data } = project;
 const { Content } = await render(project);
+
+// Fetch blog posts related to this project
+const allBlogs = await getCollection('blog');
+const relatedBlogs = allBlogs.filter((post) => {
+  const matchesProject = post.data.projectId === project.id;
+  const sharesTags = post.data.tags?.some((tag: string) =>
+    data.technologies?.includes(tag)
+  );
+  return matchesProject || sharesTags;
+});
 ---
 
-<PageLayout title={data.title} subtitle={`${data.role} · ${data.period}`}>
-  <article class="case-study-container">
-    <header class="case-study-header glass-card">
-      <div class="header-top">
-        <span class="domain-badge">{data.domain}</span>
-        <span class="period">{data.period}</span>
+<PageLayout title={data.title} subtitle={`${data.role || 'Tech Lead'} · ${data.period || 'Active'}`}>
+  <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    
+    <!-- Hero Header -->
+    <header class="p-8 md:p-12 rounded-3xl bg-surface border border-white/10 glass-card space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+        <span class="px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent font-bold uppercase tracking-wider">
+          {data.domain}
+        </span>
+        {data.period && <span class="text-neutral-400">{data.period}</span>}
       </div>
       
-      <p class="summary-lead">{data.summary}</p>
+      <p class="text-xl md:text-2xl text-neutral-200 leading-relaxed font-light">
+        {data.summary}
+      </p>
 
-      <div class="metrics-grid">
-        {data.metrics?.map((metric) => (
-          <div class="metric-pill">
-            <span class="icon">⚡</span>
-            <span>{metric}</span>
+      <!-- Key Metrics Highlight -->
+      {data.metrics && data.metrics.length > 0 && (
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-white/10">
+          {data.metrics.map((metric: any) => (
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/5">
+              <span class="text-xs font-mono text-neutral-400 uppercase block mb-1">
+                {typeof metric === 'string' ? 'Impact Metric' : metric.label}
+              </span>
+              <span class="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                {typeof metric === 'string' ? metric : metric.value}
+              </span>
+              {typeof metric !== 'string' && metric.description && (
+                <p class="text-xs text-neutral-400 mt-1">{metric.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <!-- Tech Stack Badges -->
+      {data.technologies && data.technologies.length > 0 && (
+        <div class="pt-4 border-t border-white/10">
+          <span class="text-xs font-mono text-neutral-500 uppercase block mb-3">SYSTEM TECH STACK</span>
+          <div class="flex flex-wrap gap-2">
+            {data.technologies.map((tech: string) => (
+              <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5 font-mono text-xs text-neutral-300">
+                {tech}
+              </span>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <div class="tech-stack">
-        {(data.technologies || []).map((tech) => (
-          <span class="tech-chip">{tech}</span>
-        ))}
-      </div>
+        </div>
+      )}
     </header>
 
-    <div class="post-content glass-card">
+    <!-- Post Content Container -->
+    <div class="p-8 md:p-12 rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent">
       <Content />
     </div>
+
+    <!-- Related Blog Posts Section -->
+    {relatedBlogs.length > 0 && (
+      <section class="space-y-6">
+        <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+          <span class="text-accent font-mono text-sm">//</span> Related Writing & Notes
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {relatedBlogs.map((blog) => (
+            <a 
+              href={`/blog/${blog.slug ?? blog.id.replace(/\.[^/.]+$/, "")}`} 
+              class="group p-6 rounded-2xl bg-surface border border-white/10 hover:border-accent/50 transition-all flex flex-col justify-between"
+            >
+              <div>
+                <h3 class="text-lg font-bold text-white group-hover:text-accent transition-colors mb-2">
+                  {blog.data.title}
+                </h3>
+                <p class="text-sm text-neutral-400 line-clamp-2 mb-4">
+                  {blog.data.description}
+                </p>
+              </div>
+              <span class="text-xs font-mono text-accent flex items-center gap-1">
+                Read Article →
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </article>
 </PageLayout>
-
-<style>
-  .project-header h1 {
-    font-size: 2.25rem;
-    margin: 0.5rem 0;
-  }
-  .role-lead {
-    font-size: 1.1rem;
-    color: var(--muted);
-    margin-top: 0;
-  }
-  .meta-badges {
-    display: flex;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .domain-badge {
-    color: var(--accent);
-  }
-  .impact-box {
-    margin: 1.5rem 0;
-    padding: 1.25rem;
-  }
-  .box-label {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-  .impact-box ul {
-    margin: 0.5rem 0 0;
-    padding-left: 1.2rem;
-  }
-  .tech-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-  .divider {
-    border: 0;
-    height: 1px;
-    background: var(--surface-border);
-    margin: 2rem 0;
-  }
-</style>
