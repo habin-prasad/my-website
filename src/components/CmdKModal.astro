@@ -1,131 +1,185 @@
 ---
-// src/components/CmdKModal.astro
-// You can import your existing Turnstile component here later
+// src/components/CmdKContact.astro
 ---
 
-<!-- The native dialog element. The backdrop pseudo-element handles the background blur. -->
+<!-- Trigger Button -->
+<button 
+  id="cmdk-trigger" 
+  class="fixed bottom-6 right-6 z-40 group flex items-center gap-3 bg-white text-black px-5 py-3 rounded-full font-bold shadow-2xl hover:scale-105 transition-transform duration-200"
+  aria-label="Open contact form"
+>
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+  </svg>
+  <span class="hidden sm:block">Initiate Sequence</span>
+  <kbd class="hidden sm:inline-flex items-center gap-1 bg-black/10 px-2 py-0.5 rounded text-xs font-mono font-medium opacity-80">
+    <span class="text-[10px]">⌘</span>J
+  </kbd>
+</button>
+
+<!-- Native Dialog Component -->
 <dialog 
   id="cmdk-modal" 
-  class="m-auto w-full max-w-lg bg-transparent p-4 backdrop:bg-black/70 backdrop:backdrop-blur-md open:animate-fade-in"
+  class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-xl p-4 m-auto fixed inset-0 z-50 open:animate-in open:fade-in open:zoom-in-95 duration-200"
 >
-  <div class="relative w-full rounded-2xl border border-white/10 bg-surface shadow-2xl overflow-hidden flex flex-col text-left">
+  <div class="bg-surface border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white w-full">
     
-    <!-- Header -->
-    <div class="flex items-center justify-between border-b border-white/10 bg-white/5 px-6 py-4">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/5">
       <div class="flex items-center gap-3">
-        <span class="rounded bg-accent/20 px-2 py-1 text-[10px] font-bold font-mono text-accent border border-accent/20">CMD K</span>
-        <h2 class="text-sm font-medium text-white tracking-wide uppercase font-mono">Secure Transmission</h2>
+        <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_10px_theme(colors.accent)]"></span>
+        <h3 class="font-mono text-sm tracking-widest text-neutral-400">SECURE_CHANNEL</h3>
       </div>
-      <button id="close-cmdk" class="text-neutral-500 hover:text-white transition-colors p-1 rounded-md hover:bg-white/10 outline-none">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      <button id="cmdk-close" class="text-neutral-500 hover:text-white transition-colors">
+        <kbd class="bg-white/10 px-2 py-1 rounded text-xs font-mono border border-white/10">ESC</kbd>
       </button>
     </div>
-
-    <!-- The Form (Update the action/method to match your existing API route) -->
-    <form action="/api/contact" method="POST" class="flex flex-col gap-5 p-6">
-      <div>
-        <p class="text-xl font-bold text-white mb-1">Let's fix your infrastructure.</p>
-        <p class="text-sm text-neutral-400">Where should I send the solution?</p>
-      </div>
-
-      <!-- Inputs with glassmorphic styling -->
-      <input 
-        type="email" 
-        name="email" 
-        placeholder="manager@company.com" 
-        required
-        class="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-neutral-600 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all font-mono text-sm"
-      />
+    
+    <!-- Contact Form -->
+    <form id="contact-form" action="/api/contact" method="POST" class="p-6 flex flex-col gap-6">
       
-      <textarea 
-        name="message" 
-        placeholder="Describe the system that is currently on fire..." 
-        required
-        rows="3"
-        class="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-neutral-600 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all resize-none font-mono text-sm"
-      ></textarea>
-
-      <!-- Drop your existing Cloudflare Turnstile component here -->
-      <div class="h-[65px] w-full rounded-lg border border-dashed border-white/10 bg-black/20 flex items-center justify-center text-xs font-mono text-neutral-500">
-        [ Cloudflare Turnstile Mount ]
+      <div class="flex flex-col gap-2">
+        <label for="email" class="text-sm font-mono text-neutral-400">TARGET_EMAIL</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required 
+          placeholder="cto@company.com" 
+          class="bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all font-sans" 
+        />
+      </div>
+      
+      <div class="flex flex-col gap-2">
+        <label for="message" class="text-sm font-mono text-neutral-400">SYSTEM_STATUS / MESSAGE</label>
+        <textarea 
+          id="message" 
+          name="message" 
+          required 
+          rows="4" 
+          placeholder="Tell me about the infrastructure fire..." 
+          class="bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none font-sans"
+        ></textarea>
       </div>
 
-      <button 
-        type="submit" 
-        class="group relative w-full overflow-hidden rounded-xl bg-accent px-4 py-3 font-bold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
-      >
-        <span class="relative z-10 flex items-center justify-center gap-2">
-          Deploy Message
-          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        </span>
-      </button>
+      <!-- Turnstile Integration -->
+      <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-theme="dark"></div>
+
+      <div class="flex items-center justify-between pt-2">
+        <p class="text-xs text-neutral-500 font-mono hidden sm:block">Routing via Edge Network</p>
+        <button 
+          type="submit" 
+          class="w-full sm:w-auto bg-accent text-black font-bold px-6 py-3 rounded-lg hover:bg-[#b3e600] transition-colors flex items-center justify-center gap-2"
+        >
+          <span>Deploy Message</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </button>
+      </div>
     </form>
   </div>
 </dialog>
 
-<!-- Floating Action Button for Mobile / Mouse users -->
-<button 
-  id="fab-cmdk" 
-  class="fixed bottom-6 right-6 z-40 group flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-surface/80 backdrop-blur-xl text-white shadow-2xl transition-all hover:border-accent hover:text-accent hover:scale-110 outline-none focus:border-accent focus:ring-2 focus:ring-accent/50"
-  aria-label="Contact Me"
->
-  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-  
-  <!-- Hover Tooltip -->
-  <span class="absolute right-full mr-4 hidden -translate-y-1/2 top-1/2 whitespace-nowrap rounded-md border border-white/10 bg-surface px-2 py-1 text-xs font-mono text-neutral-400 group-hover:block">
-    Cmd + K
-  </span>
-</button>
-
 <script>
   document.addEventListener('astro:page-load', () => {
-    const dialog = document.getElementById('cmdk-modal') as HTMLDialogElement;
-    const closeBtn = document.getElementById('close-cmdk');
-    const fabBtn = document.getElementById('fab-cmdk');
+    const modal = document.getElementById('cmdk-modal') as HTMLDialogElement;
+    const trigger = document.getElementById('cmdk-trigger');
+    const closeBtn = document.getElementById('cmdk-close');
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const btnText = submitBtn?.querySelector('span');
 
-    if (!dialog) return;
+    if (!modal) return;
 
-    // Open Modal function
-    const openModal = () => dialog.showModal();
-    const closeModal = () => dialog.close();
+    const openModal = () => {
+      modal.showModal();
+      document.body.style.overflow = 'hidden'; 
+      setTimeout(() => emailInput?.focus(), 50); 
+    };
 
-    // 1. Listen for Keyboard Shortcut (Cmd+K or Ctrl+K)
+    const closeModal = () => {
+      modal.close();
+      document.body.style.overflow = '';
+    };
+
+    // Keyboard Shortcut (Cmd+J / Ctrl+J to prevent search conflict)
     document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault(); // Prevent browser search bar
-        dialog.open ? closeModal() : openModal();
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') {
+        e.preventDefault();
+        modal.open ? closeModal() : openModal();
       }
     });
 
-    // 2. Click Handlers
-    fabBtn?.addEventListener('click', openModal);
+    // Button Events
+    trigger?.addEventListener('click', openModal);
     closeBtn?.addEventListener('click', closeModal);
-
-    // 3. Close when clicking the backdrop (outside the form content)
-    dialog.addEventListener('click', (e) => {
-      const rect = dialog.getBoundingClientRect();
-      const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height
-        && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
-      if (!isInDialog) {
+    
+    // Close on Backdrop Click
+    modal.addEventListener('click', (e) => {
+      const dialogDimensions = modal.getBoundingClientRect();
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
         closeModal();
+      }
+    });
+
+    // Async Form Submission
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!btnText || !submitBtn) return;
+
+      const originalText = btnText.innerText;
+      btnText.innerText = 'Transmitting...';
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          btnText.innerText = 'Deployed Successfully';
+          submitBtn.classList.replace('bg-accent', 'bg-white');
+          
+          setTimeout(() => {
+            closeModal();
+            form.reset();
+            
+            if (typeof (window as any).turnstile !== 'undefined') {
+              (window as any).turnstile.reset();
+            }
+            
+            btnText.innerText = originalText;
+            submitBtn.classList.replace('bg-white', 'bg-accent');
+            submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            submitBtn.disabled = false;
+          }, 2000);
+        } else {
+          throw new Error(result.error || 'Submission failed');
+        }
+      } catch (error) {
+        btnText.innerText = 'Transmission Failed';
+        submitBtn.classList.replace('bg-accent', 'bg-red-500');
+        
+        setTimeout(() => {
+          btnText.innerText = originalText;
+          submitBtn.classList.replace('bg-red-500', 'bg-accent');
+          submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+          submitBtn.disabled = false;
+        }, 3000);
       }
     });
   });
 </script>
-
-<style>
-  /* Optional: Smooth fade-in for the dialog */
-  dialog[open] {
-    animation: zoom-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  
-  @keyframes zoom-in {
-    0% { opacity: 0; transform: scale(0.95); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-
-  /* Hide scrollbar on body when modal is open */
-  :global(body:has(dialog[open])) {
-    overflow: hidden;
-  }
-</style>

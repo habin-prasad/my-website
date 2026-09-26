@@ -1,8 +1,16 @@
 import type { APIRoute } from 'astro';
 import { queryDb } from '../../lib/db';
-import { rateLimit, getClientIP } from '../../lib/rateLimit';
-
+import { reactRateLimit } from '../../lib/r_limit';
 export const prerender = false; // Edge serverless route
+
+// Helper to extract real IP across Cloudflare & reverse proxies
+function getClientIP(request: Request): string {
+  return (
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    '127.0.0.1'
+  );
+}
 
 // ---------------------------------------------------------------------------
 // GET: Fetch reaction count with Edge/Browser Caching
@@ -30,7 +38,6 @@ export const GET: APIRoute = async ({ request }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        // Cache on Edge CDN for 60s, serve stale up to 5 mins while revalidating
         'Cache-Control': 'public, max-age=60, s-maxage=60, stale-while-revalidate=300',
       },
     });
@@ -40,29 +47,28 @@ export const GET: APIRoute = async ({ request }) => {
 };
 
 // ---------------------------------------------------------------------------
-// POST: Increment reaction count using Atomic RETURNING (1 DB roundtrip)
+// POST: Increment reaction count with Upstash Redis Rate Limiting & Atomic UPSERT
 // ---------------------------------------------------------------------------
 export const POST: APIRoute = async ({ request }) => {
   const clientIP = getClientIP(request);
-  const limiter = rateLimit(clientIP, {
-    windowMs: 60 * 1000,
-    maxRequests: 5,
-  });
-
+  
+  // Upstash sliding window rate limit
+  const { success, limit, remaining, reset } = await reactRateLimit.limit(`react_${clientIP}`);
+  
   const rateLimitHeaders = {
-    'X-RateLimit-Limit': limiter.limit.toString(),
-    'X-RateLimit-Remaining': limiter.remaining.toString(),
-    'X-RateLimit-Reset': limiter.resetInSeconds.toString(),
+    'X-RateLimit-Limit': limit.toString(),
+    'X-RateLimit-Remaining': remaining.toString(),
+    'X-RateLimit-Reset': reset.toString(),
   };
 
-  if (!limiter.success) {
+  if (!success) {
     return new Response(
-      JSON.stringify({ error: 'Rate limit exceeded. Please wait a minute.' }),
+      JSON.stringify({ error: 'Rate limit exceeded. Please wait a moment.' }),
       {
         status: 429,
         headers: {
           'Content-Type': 'application/json',
-          'Retry-After': limiter.resetInSeconds.toString(),
+          'Retry-After': Math.ceil((reset - Date.now()) / 1000).toString(),
           ...rateLimitHeaders,
         },
       }
@@ -79,7 +85,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Atomic UPSERT + RETURNING clause (Eliminates separate SELECT query)
+    // Atomic UPSERT + RETURNING clause (1 DB roundtrip over Turso HTTP pipeline)
     const rows = await queryDb<{ count: number }>({
       sql: `
         INSERT INTO post_reactions (slug, count) 
