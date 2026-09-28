@@ -34,10 +34,12 @@ export default defineConfig({
       UPSTASH_REDIS_REST_URL: envField.string({
         context: 'server',
         access: 'secret',
+        optional: true,
       }),
       UPSTASH_REDIS_REST_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
+        optional: true,
       }),
       // Client-exposed variables
       PUBLIC_TURNSTILE_SITE_KEY: envField.string({

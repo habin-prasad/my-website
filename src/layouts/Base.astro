@@ -5,6 +5,37 @@ import SearchModal from '../components/SearchModal.astro';
 import { ClientRouter } from 'astro:transitions';
 import TelemetryWidget from '../components/TelemetryWidget.astro';
 import CmdKModal from '../components/CmdKModal.astro';
+import SEO from '../components/SEO.astro';
+
+import { PROFILE } from '../config/profile';
+import { SOCIAL_LINKS } from '../config/social';
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": PROFILE.name,
+  "jobTitle": PROFILE.title,
+  "worksFor": {
+    "@type": "Organization",
+    "name": "MoEngage Inc."
+  },
+  "url": "https://habin.gatedqass.in",
+  "sameAs": SOCIAL_LINKS.map(s => s.url),
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Bengaluru",
+    "addressRegion": "Karnataka",
+    "addressCountry": "India"
+  },
+  "knowsAbout": [
+    "Software Quality Engineering",
+    "Automation Testing",
+    "Chaos Testing",
+    "Performance Engineering",
+    "Solution Architecture",
+    "Scrum Methodology"
+  ]
+};
 
 interface Props {
   title?: string;
@@ -27,7 +58,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
-
+    <SEO description="{description}" title="{title}"/>
     <!-- Open Graph / Social -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -77,4 +108,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
     <TelemetryWidget />
     <CmdKModal />
   </body>
+  <!-- JSON-LD Structured Data Injection -->
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 </html>
