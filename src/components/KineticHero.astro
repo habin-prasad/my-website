@@ -1,10 +1,9 @@
 ---
-// src/components/KineticHero.astro
 export interface HeroOption {
-  key: string;      // Matches project.data.domain (e.g., 'API & Microservices')
-  label: string;    // Display text on command palette button (e.g., 'Scale')
-  text: string;     // Hero headline accent text (e.g., 'scalable infrastructure.')
-  desc: string;     // Hero subheadline paragraph
+  key: string;
+  label: string;
+  text: string;
+  desc: string;
 }
 
 interface Props {
@@ -15,28 +14,28 @@ const { options = [] } = Astro.props;
 const initialOption = options[0];
 ---
 
-<section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/20 blur-[120px] rounded-full pointer-events-none opacity-40"></div>
+<section class="relative pt-20 pb-12 sm:pt-32 sm:pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] sm:w-[600px] h-[300px] bg-accent/20 blur-[100px] rounded-full pointer-events-none opacity-40"></div>
 
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8">
-      You are here because you need <br class="hidden md:block" />
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-8">
+    <h1 class="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight">
+      You are here because you need <br class="hidden sm:block" />
       <span id="hero-dynamic-text" class="text-accent transition-opacity duration-200">
         {initialOption?.text || 'scalable infrastructure.'}
       </span>
     </h1>
 
-    <!-- Command Palette Toggles mapped directly from content collections -->
-    <div class="flex flex-wrap gap-3 mb-8" id="hero-toggles">
+    <!-- Mobile Touch Horizontal Scroll Toggles -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" id="hero-toggles">
       {options.map((option, idx) => (
         <button 
           data-key={option.key}
           data-text={option.text}
           data-desc={option.desc}
-          class={`hero-btn px-6 py-2 rounded-full border font-medium transition-colors ${
+          class={`hero-btn shrink-0 px-4 py-2 rounded-full font-mono text-xs font-medium transition-all active:scale-95 ${
             idx === 0 
-              ? 'border-accent bg-accent/10 text-accent' 
-              : 'border-white/10 bg-white/5 text-neutral-400 hover:text-white'
+              ? 'border border-accent bg-accent/10 text-accent font-bold' 
+              : 'border border-white/10 bg-white/5 text-neutral-400 hover:text-white'
           }`}
         >
           {option.label}
@@ -44,7 +43,7 @@ const initialOption = options[0];
       ))}
     </div>
 
-    <p id="hero-description" class="text-xl md:text-2xl text-neutral-400 max-w-2xl leading-relaxed transition-opacity duration-200">
+    <p id="hero-description" class="text-base sm:text-xl md:text-2xl text-neutral-400 max-w-2xl leading-relaxed transition-opacity duration-200">
       {initialOption?.desc || "When traffic spikes, systems shouldn't sweat."}
     </p>
   </div>
@@ -67,17 +66,14 @@ const initialOption = options[0];
 
         if (!selectedKey) return;
 
-        // Reset state across buttons
         buttons.forEach((b) => {
-          b.classList.remove('border-accent', 'bg-accent/10', 'text-accent');
+          b.classList.remove('border-accent', 'bg-accent/10', 'text-accent', 'font-bold');
           b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
         });
 
-        // Set active button
         targetBtn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
-        targetBtn.classList.add('border-accent', 'bg-accent/10', 'text-accent');
+        targetBtn.classList.add('border-accent', 'bg-accent/10', 'text-accent', 'font-bold');
 
-        // Animate text changes
         dynamicText.style.opacity = '0';
         description.style.opacity = '0';
 
@@ -89,7 +85,6 @@ const initialOption = options[0];
           description.style.opacity = '1';
         }, 200);
 
-        // Dispatch custom domain change event to update BentoGrid
         window.dispatchEvent(
           new CustomEvent('hero-domain-change', {
             detail: { domain: selectedKey }

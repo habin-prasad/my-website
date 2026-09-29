@@ -1,28 +1,29 @@
-<div id="progress-bar" class="progress-bar"></div>
+<div id="progress-bar" class="fixed top-0 left-0 h-[2px] w-0 bg-gradient-to-r from-accent via-emerald-400 to-purple-500 z-50 transition-all duration-75 ease-out"></div>
 
 <script>
-  function updateProgress() {
-    const bar = document.getElementById('progress-bar');
+  function initProgressBar() {
+    const bar = document.getElementById('progress-bar')!;
     if (!bar) return;
 
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
-    bar.style.width = `${progress}%`;
+    let ticking = false;
+
+    function updateProgress() {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+      bar.style.width = `${progress}%`;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateProgress();
   }
 
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  document.addEventListener('astro:page-load', updateProgress);
+  document.addEventListener('DOMContentLoaded', initProgressBar);
+  document.addEventListener('astro:page-load', initProgressBar);
 </script>
-
-<style>
-  .progress-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 0%;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-purple) 100%);
-    z-index: 100;
-    transition: width 0.1s ease-out;
-  }
-</style>

@@ -5,32 +5,54 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <PageLayout title="Contact">
-  <!-- 1. Load Cloudflare Turnstile JS -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-  <form id="contact-form" class="space-y-4">
-    <div>
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" required class="border w-full p-2" />
-    </div>
+  <div class="max-w-xl mx-auto">
+    <form id="contact-form" class="space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium mb-1">Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          required 
+          class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-base text-white focus:outline-none focus:border-accent" 
+        />
+      </div>
 
-    <div>
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required class="border w-full p-2" />
-    </div>
+      <div>
+        <label for="email" class="block text-sm font-medium mb-1">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required 
+          class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-base text-white focus:outline-none focus:border-accent" 
+        />
+      </div>
 
-    <div>
-      <label for="message">Message</label>
-      <textarea id="message" name="message" required class="border w-full p-2"></textarea>
-    </div>
+      <div>
+        <label for="message" class="block text-sm font-medium mb-1">Message</label>
+        <textarea 
+          id="message" 
+          name="message" 
+          rows="4" 
+          required 
+          class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-base text-white focus:outline-none focus:border-accent"
+        ></textarea>
+      </div>
 
-    <!-- 2. Turnstile Widget Container -->
-    <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>
+      <div class="cf-turnstile overflow-hidden" data-sitekey={siteKey} data-theme="dark"></div>
 
-    <button type="submit" id="submit-btn" class="bg-blue-600 text-white px-4 py-2 rounded">
-      Send Message
-    </button>
-  </form>
+      <button 
+        type="submit" 
+        id="submit-btn" 
+        class="w-full sm:w-auto bg-white text-black hover:bg-neutral-200 font-semibold px-6 py-3 rounded-lg transition-all"
+      >
+        Send Message
+      </button>
+    </form>
+  </div>
 </PageLayout>
 
 <script>
@@ -41,7 +63,6 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries());
 
-    // Extract Turnstile token generated automatically in the form
     if (!payload['cf-turnstile-response']) {
       alert('Please complete the CAPTCHA verification.');
       return;
@@ -60,4 +81,4 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
       alert('Verification failed or server error occurred.');
     }
   });
-</script>
+</script>k

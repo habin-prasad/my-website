@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import HorizontalCarousel from './HorizontalCarousel.astro';
+
 type ProjectEntry = CollectionEntry<'projects'>;
 type BlogEntry = CollectionEntry<'blog'>;
 
@@ -36,8 +38,88 @@ const metricDesc = isMetricObject ? primaryMetric.description : metric.descripti
 ---
 
 <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-  <!-- Bento Grid Display -->
-  <div class="grid grid-cols-1 md:grid-cols-4 auto-rows-[200px] gap-4">
+  
+  <!-- 1. MOBILE EXPERIENCE (< md): Touch-First Horizontal Snap Carousel -->
+  <div class="block md:hidden">
+    <HorizontalCarousel title="Featured Overview" icon={`<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />`}>
+      
+      <!-- Mobile Card 1: Dynamic Top Project -->
+      <a 
+        id="bento-project-card-mobile"
+        href={topProject ? `/projects/${topProject.id}` : "/projects"}
+        class="snap-center shrink-0 w-[82vw] rounded-3xl bg-surface border border-white/10 p-6 flex flex-col justify-between"
+      >
+        <div>
+          <span id="bento-project-domain-mobile" class="text-accent font-mono text-xs mb-2 block">
+            01 / {topProject?.data.domain || 'Featured System'}
+          </span>
+          <h3 id="bento-project-title-mobile" class="text-2xl font-bold text-white mb-2 tracking-tight">
+            {topProject?.data.title || 'Global API Gateway'}
+          </h3>
+          <p id="bento-project-summary-mobile" class="text-neutral-400 text-xs line-clamp-2">
+            {topProject?.data.summary || 'Distributed architecture and edge-first routing.'}
+          </p>
+        </div>
+        <div class="flex items-center gap-1 text-accent text-xs font-mono mt-4">
+          <span>Explore Architecture</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </div>
+      </a>
+
+      <!-- Mobile Card 2: Dynamic Metric -->
+      <div class="snap-center shrink-0 w-[72vw] rounded-3xl bg-surface border border-white/10 p-6 flex flex-col justify-center">
+        <p id="bento-metric-label-mobile" class="text-neutral-400 text-xs uppercase tracking-wider mb-1 font-mono">
+          {metricLabel}
+        </p>
+        <h2 id="bento-metric-value-mobile" class="text-5xl font-bold text-white tracking-tighter mb-1">
+          {metricValue}
+        </h2>
+        <p id="bento-metric-desc-mobile" class="text-neutral-500 text-xs">
+          {metricDesc}
+        </p>
+      </div>
+
+      <!-- Mobile Card 3: Core Tech Stack -->
+      <div class="snap-center shrink-0 w-[72vw] rounded-3xl bg-surface border border-white/10 p-6 flex flex-col justify-between">
+        <h3 class="text-white font-bold text-lg mb-3 tracking-tight">Core Stack</h3>
+        <div id="bento-tech-list-mobile" class="flex flex-wrap gap-1.5">
+          {(topProject?.data.technologies || technologies.slice(0, 6)).map((tech) => (
+            <span class="px-2.5 py-1 rounded-full border border-white/10 bg-white/5 text-[11px] text-neutral-300 font-mono">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Mobile Card 4: Related Blog -->
+      <a 
+        id="bento-blog-card-mobile"
+        href={topPost ? `/blog/${topPost.id}` : "/blog"}
+        class="snap-center shrink-0 w-[80vw] rounded-3xl bg-surface border border-white/10 p-6 flex flex-col justify-between"
+      >
+        <div>
+          <span class="text-neutral-400 font-mono text-xs mb-2 block">02 / WRITING LOG</span>
+          <h3 id="bento-blog-title-mobile" class="text-xl font-bold text-white tracking-tight">
+            {topPost?.data.title || 'Zero-Trust Security'}
+          </h3>
+        </div>
+        <div class="flex items-center justify-between text-xs font-mono text-neutral-400 mt-4">
+          <span>Read Article</span>
+          <div class="w-7 h-7 rounded-full border border-white/10 flex items-center justify-center text-white">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+    </HorizontalCarousel>
+  </div>
+
+  <!-- 2. DESKTOP & TABLET EXPERIENCE (≥ md): Classic Multi-Column Bento Grid -->
+  <div class="hidden md:grid grid-cols-1 md:grid-cols-4 auto-rows-[200px] gap-4">
     
     <!-- 1. Dynamic Top Project Tile -->
     <a 
@@ -61,19 +143,18 @@ const metricDesc = isMetricObject ? primaryMetric.description : metric.descripti
     </a>
 
     <!-- 2. Dynamic Metric Tile -->
-    <!-- Update the Bento Grid Metric Tile HTML to use the safe variables -->
     <div class="col-span-1 md:col-span-2 md:row-span-1 rounded-3xl bg-surface border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden group">
-    <p id="bento-metric-label" class="text-neutral-400 text-sm uppercase tracking-wider mb-2 font-mono">
+      <p id="bento-metric-label" class="text-neutral-400 text-sm uppercase tracking-wider mb-2 font-mono">
         {metricLabel}
-    </p>
-    <div class="flex items-baseline gap-2">
+      </p>
+      <div class="flex items-baseline gap-2">
         <h2 id="bento-metric-value" class="text-5xl md:text-6xl font-bold text-white tracking-tighter">
-        {metricValue}
+          {metricValue}
         </h2>
-    </div>
-    <p id="bento-metric-desc" class="text-sm text-neutral-500 mt-2">
+      </div>
+      <p id="bento-metric-desc" class="text-sm text-neutral-500 mt-2">
         {metricDesc}
-    </p>
+      </p>
     </div>
 
     <!-- 3. Dynamic Tech Stack Tile -->
@@ -124,9 +205,6 @@ const metricDesc = isMetricObject ? primaryMetric.description : metric.descripti
     </a>
 
   </div>
-    <span class="text-3xl font-bold">{metricValue || metric.value}</span>
-    <span>{metricLabel}</span>
-    <p>{metricDesc}</p>
 </section>
 
 <!-- Reacts strictly to hero custom event toggles -->
@@ -141,46 +219,63 @@ const metricDesc = isMetricObject ? primaryMetric.description : metric.descripti
         p.data.tags?.some((tag) => domain.toLowerCase().includes(tag.toLowerCase()))
       ) || posts[0];
 
-      // Update Project Tile UI
-      if (activeProject) {
-        const projCard = document.getElementById('bento-project-card');
-        const projDomain = document.getElementById('bento-project-domain');
-        const projTitle = document.getElementById('bento-project-title');
-        const projSummary = document.getElementById('bento-project-summary');
+      // Helper to safely set element properties across both mobile & desktop
+      const setAttr = (id, prop, val) => {
+        const el = document.getElementById(id);
+        if (el) el[prop] = val;
+      };
+      const setText = (id, text) => setAttr(id, 'textContent', text);
 
-        if (projCard) projCard.href = `/projects/${activeProject.id}`;
-        if (projDomain) projDomain.textContent = `01 / ${activeProject.data.domain}`;
-        if (projTitle) projTitle.textContent = activeProject.data.title;
-        if (projSummary) projSummary.textContent = activeProject.data.summary;
+      // Update Project Tile UI (Desktop & Mobile)
+      if (activeProject) {
+        setAttr('bento-project-card', 'href', `/projects/${activeProject.id}`);
+        setAttr('bento-project-card-mobile', 'href', `/projects/${activeProject.id}`);
+        
+        setText('bento-project-domain', `01 / ${activeProject.data.domain}`);
+        setText('bento-project-domain-mobile', `01 / ${activeProject.data.domain}`);
+
+        setText('bento-project-title', activeProject.data.title);
+        setText('bento-project-title-mobile', activeProject.data.title);
+
+        setText('bento-project-summary', activeProject.data.summary);
+        setText('bento-project-summary-mobile', activeProject.data.summary);
 
         // Update Tech Stack Tile
+        const techMarkup = (activeProject.data.technologies || [])
+          .map((tech) => `<span class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-neutral-300 font-mono">${tech}</span>`)
+          .join('');
+
         const techList = document.getElementById('bento-tech-list');
-        if (techList && activeProject.data.technologies) {
-          techList.innerHTML = activeProject.data.technologies
-            .map((tech) => `<span class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-neutral-300 font-mono">${tech}</span>`)
-            .join('');
-        }
+        const techListMobile = document.getElementById('bento-tech-list-mobile');
+        if (techList) techList.innerHTML = techMarkup;
+        if (techListMobile) techListMobile.innerHTML = techMarkup;
 
         // Update Metric Tile
-        const metric = activeProject.data.metrics?.[0];
-        if (metric) {
-          const metricLabel = document.getElementById('bento-metric-label');
-          const metricValue = document.getElementById('bento-metric-value');
-          const metricDesc = document.getElementById('bento-metric-desc');
+        const primaryMetric = activeProject.data.metrics?.[0];
+        if (primaryMetric) {
+          const isObj = typeof primaryMetric === 'object' && primaryMetric !== null;
+          const val = isObj ? primaryMetric.value : primaryMetric;
+          const lbl = isObj ? primaryMetric.label : 'Impact Metric';
+          const desc = isObj ? primaryMetric.description : '';
 
-          if (metricLabel) metricLabel.textContent = metric.label;
-          if (metricValue) metricValue.textContent = metric.value;
-          if (metricDesc) metricDesc.textContent = metric.description;
+          setText('bento-metric-label', lbl);
+          setText('bento-metric-label-mobile', lbl);
+
+          setText('bento-metric-value', val);
+          setText('bento-metric-value-mobile', val);
+
+          setText('bento-metric-desc', desc);
+          setText('bento-metric-desc-mobile', desc);
         }
       }
 
-      // Update Blog Tile UI
+      // Update Blog Tile UI (Desktop & Mobile)
       if (activePost) {
-        const blogCard = document.getElementById('bento-blog-card');
-        const blogTitle = document.getElementById('bento-blog-title');
+        setAttr('bento-blog-card', 'href', `/blog/${activePost.id}`);
+        setAttr('bento-blog-card-mobile', 'href', `/blog/${activePost.id}`);
 
-        if (blogCard) blogCard.href = `/blog/${activePost.id}`;
-        if (blogTitle) blogTitle.textContent = activePost.data.title;
+        setText('bento-blog-title', activePost.data.title);
+        setText('bento-blog-title-mobile', activePost.data.title);
       }
     }
 
