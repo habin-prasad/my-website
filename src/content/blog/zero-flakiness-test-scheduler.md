@@ -2,7 +2,7 @@
 title: "Designing a Zero-Flakiness Test Scheduler at Scale"
 description: "A deep dive into building deterministic test runtime pipelines, handling race conditions, and isolating network state in Playwright."
 pubDate: 2026-02-15
-draft: false
+draft: true
 tags: ["Architecture", "Playwright", "Infrastructure"]
 ---
 

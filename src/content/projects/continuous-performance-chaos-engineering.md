@@ -16,6 +16,7 @@ technologies:
   - "Grafana"
   - "Kubernetes"
 featured: false
+draft: true
 ---
 
 ### Situation

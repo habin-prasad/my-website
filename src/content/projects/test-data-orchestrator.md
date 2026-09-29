@@ -16,6 +16,7 @@ technologies:
   - "Docker"
   - "gRPC"
 featured: true
+draft: true
 ---
 
 ### Situation

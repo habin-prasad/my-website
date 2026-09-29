@@ -1,9 +1,8 @@
 ---
 interface Props {
-  slug: string;
+  slug?: string;
 }
-
-const { slug } = Astro.props;
+const { slug = 'default' } = Astro.props;
 ---
 
 <div class="reaction-container glass-card" data-slug={slug}>

@@ -2,7 +2,7 @@
 title: "Measuring Engineering Health: Operationalizing DORA Metrics and Quality Telemetry"
 description: "How to build an event-driven telemetry pipeline that tracks Deployment Frequency, Lead Time, Change Failure Rate, and Mean Time to Recovery in real time."
 pubDate: 2017-04-10
-draft: false
+draft: true
 tags: ["DORA Metrics", "Analytics", "Observability", "Quality Engineering", "Leadership"]
 ---
 

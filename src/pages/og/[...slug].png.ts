@@ -1,74 +1,48 @@
-import satori from 'satori';
-import { Resvg, initWasm } from '@resvg/resvg-wasm';
-import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm?module';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import type { APIContext } from 'astro';
 
 export const prerender = true;
 
-// 1. Tell Astro which static OG PNG files to generate at build time
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  
   return posts
-    .filter((post) => post.slug && post.slug.trim() !== '') // Ensure no undefined or empty slugs
-    .map((post) => ({
-      params: { slug: post.slug },
-      props: { title: post.data.title },
-    }));
+    .filter((post) => !post.data.draft)
+    .map((post) => {
+      const postSlug = (post as any).slug ?? post.id.replace(/\.[^/.]+$/, '');
+      return {
+        params: { slug: postSlug },
+        props: { post },
+      };
+    });
 }
 
-let wasmInitialized = false;
-
-async function ensureWasm() {
-  if (!wasmInitialized) {
-    try {
-      // Pass the imported WASM module directly (supported natively by Cloudflare/Vite)
-      await initWasm(resvgWasm);
-      wasmInitialized = true;
-    } catch (e) {
-      // Avoid re-initialization error during hot reloads
-    }
-  }
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
+function generateSvg(title: string): string {
+  const safeTitle = escapeXml(title);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#38bdf8" font-size="60" font-weight="bold" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">${safeTitle}</text>
+</svg>`;
+}
 
+export async function GET(context: APIContext) {
+  const post = context.props.post as CollectionEntry<'blog'>;
+  const title = post?.data?.title ?? 'Engineering Article';
 
-export async function GET({ props }: { props: { title: string } }) {
-  await ensureWasm();
+  const svg = generateSvg(title);
 
-  const svg = await satori(
-    {
-      type: 'div',
-      props: {
-        children: props.title || 'Engineering Article',
-        style: {
-          display: 'flex',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#0f172a',
-          color: '#38bdf8',
-          fontSize: 60,
-          fontWeight: 'bold',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '40px',
-        },
-      },
-    },
-    {
-      width: 1200,
-      height: 630,
-      fonts: [], // Pass your loaded font buffers here
-    }
-  );
-
-  const resvg = new Resvg(svg);
-  const pngData = resvg.render();
-  const pngBuffer = pngData.asPng();
-
-  return new Response(pngBuffer, {
+  return new Response(svg, {
+    status: 200,
     headers: {
-      'Content-Type': 'image/png',
+      'Content-Type': 'image/svg+xml',
       'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });

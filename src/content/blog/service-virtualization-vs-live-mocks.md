@@ -2,7 +2,7 @@
 title: "Service Virtualization in Practice: Decoupling Pipelines from Fragile External APIs"
 description: "Why relying on live third-party staging sandboxes causes pipeline failures and how stateful HTTP mocking restores determinism."
 pubDate: 2015-02-10
-draft: false
+draft: true
 tags: ["Architecture", "API", "Service Virtualization", "Testing Strategy"]
 ---
 

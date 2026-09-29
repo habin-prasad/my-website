@@ -5,10 +5,13 @@ export const prerender = true;
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  return projects.map((project) => ({
-    params: { id: project.id },
-    props: { project },
-  }));
+  
+  return projects
+    .filter((project) => !project.data.draft)
+    .map((project) => ({
+      params: { id: project.id },
+      props: { project },
+    }));
 }
 
 const { id } = Astro.params;
@@ -32,7 +35,7 @@ const relatedBlogs = allBlogs.filter((post) => {
   const sharesTags = post.data.tags?.some((tag: string) =>
     data.technologies?.includes(tag)
   );
-  return matchesProject || sharesTags;
+  return (matchesProject || sharesTags) && !post.data.draft;
 });
 ---
 
@@ -101,7 +104,7 @@ const relatedBlogs = allBlogs.filter((post) => {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {relatedBlogs.map((blog) => (
             <a 
-              href={`/blog/${blog.slug ?? blog.id.replace(/\.[^/.]+$/, "")}`} 
+              href={`/blog/${(blog as any).slug ?? blog.id.replace(/\.[^/.]+$/, "")}`}
               class="group p-6 rounded-2xl bg-surface border border-white/10 hover:border-accent/50 transition-all flex flex-col justify-between"
             >
               <div>

@@ -2,7 +2,7 @@
 title: "Statistical Flakiness Detection: Moving Beyond Naive Retry Loops"
 description: "Applying binomial probability models and sliding-window variance metrics to distinguish true regressions from environmental test flakiness."
 pubDate: 2016-01-18
-draft: false
+draft: true
 tags: ["Statistics", "Algorithms", "CI/CD", "Quality"]
 ---
 

@@ -2,7 +2,7 @@
 title: "Contract Testing vs. E2E: Why Microservices Don't Need Staging Integration Suites"
 description: "How to eliminate slow, fragile staging integration environments by moving breaking API change detection directly into compile-time consumer-driven contract tests."
 pubDate: 2026-02-01
-draft: false
+draft: true
 tags: ["Architecture", "Microservices", "API", "Contract Testing"]
 ---
 

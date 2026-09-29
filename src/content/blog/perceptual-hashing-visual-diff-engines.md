@@ -2,7 +2,7 @@
 title: "Perceptual Hashing vs. Pixel-by-Pixel Diffing in Automated Visual Testing"
 description: "How pHash algorithms, Hamming distance metrics, and color-space delta calculations eliminate false positives in automated layout regression testing."
 pubDate: 2014-10-15
-draft: false
+draft: true
 tags: ["Visual Testing", "Algorithms", "Computer Vision", "Frontend"]
 ---
 

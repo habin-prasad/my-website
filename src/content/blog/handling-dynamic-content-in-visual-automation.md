@@ -2,7 +2,7 @@
 title: "Handling Dynamic Content & Animations in Automated Visual Testing"
 description: "Engineering strategies for DOM masking, CSS animation freezing, and deterministic clock mocking in visual regression suites."
 pubDate: 2014-12-02
-draft: false
+draft: true
 tags: ["Frontend", "Visual Testing", "DOM", "JavaScript"]
 ---
 

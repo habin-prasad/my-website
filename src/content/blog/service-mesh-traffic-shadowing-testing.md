@@ -2,7 +2,7 @@
 title: "Validating API Changes in Production using Istio Service Mesh Traffic Shadowing"
 description: "Mirroring live production HTTP traffic to staging containers using Istio and Envoy to catch unexpected edge cases without impacting end users."
 pubDate: 2016-10-20
-draft: false
+draft: true
 tags: ["Kubernetes", "Service Mesh", "Istio", "DevOps", "Networking"]
 ---
 

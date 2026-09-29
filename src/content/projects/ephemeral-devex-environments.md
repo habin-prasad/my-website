@@ -16,6 +16,7 @@ technologies:
   - "GitHub Actions"
   - "TypeScript"
 featured: true
+draft: true
 ---
 
 ### Situation

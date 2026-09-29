@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 
   return pageEntries.map((entry) => {
     // Fallback for Astro 4 (slug) vs Astro 5 (id)
-    const rawSlug = entry.slug ?? entry.id;
+    const rawSlug = (entry as any).slug ?? entry.id.replace(/\.[^/.]+$/, "");
     // Strip .md or .mdx extension
     const slug = rawSlug.replace(/\.[^/.]+$/, '');
 

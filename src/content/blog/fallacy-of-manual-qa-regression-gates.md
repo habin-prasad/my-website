@@ -2,7 +2,7 @@
 title: "The Fallacy of Manual QA Regression Gates in Modern Software Delivery"
 description: "Why manual verification phases introduce severe delivery bottlenecks, lower quality ownership, and how to transition to automated quality confidence scoring."
 pubDate: 2014-02-18
-draft: false
+draft: true
 tags: ["Testing Strategy", "Agile", "DevOps", "Culture"]
 ---
 

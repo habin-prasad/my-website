@@ -2,7 +2,7 @@
 title: "Observability-Driven Automation: Debugging Distributed Systems with OpenTelemetry"
 description: "How injecting distributed tracing headers into automated test harnesses reduces Mean Time to Detection (MTTD) for complex microservice failures."
 pubDate: 2025-09-05
-draft: false
+draft: true
 tags: ["Observability", "OpenTelemetry", "Distributed Tracing", "DevEx"]
 ---
 

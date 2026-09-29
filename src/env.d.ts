@@ -17,3 +17,8 @@ declare namespace App {
     };
   }
 }
+
+declare module '*index_bg.wasm?module' {
+  const module: WebAssembly.Module;
+  export default module;
+}

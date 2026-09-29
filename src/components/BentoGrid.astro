@@ -1,6 +1,5 @@
 ---
-import { CollectionEntry } from 'astro:content';
-
+import type { CollectionEntry } from 'astro:content';
 type ProjectEntry = CollectionEntry<'projects'>;
 type BlogEntry = CollectionEntry<'blog'>;
 
@@ -26,6 +25,14 @@ const {
 
 const topProject = projects[0];
 const topPost = posts[0];
+
+// Safely extract metric object or string
+const primaryMetric = topProject?.data.metrics?.[0];
+const isMetricObject = typeof primaryMetric === 'object' && primaryMetric !== null;
+
+const metricValue = isMetricObject ? primaryMetric.value : (typeof primaryMetric === 'string' ? primaryMetric : metric.value);
+const metricLabel = isMetricObject ? primaryMetric.label : metric.label;
+const metricDesc = isMetricObject ? primaryMetric.description : metric.description;
 ---
 
 <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
@@ -54,18 +61,19 @@ const topPost = posts[0];
     </a>
 
     <!-- 2. Dynamic Metric Tile -->
+    <!-- Update the Bento Grid Metric Tile HTML to use the safe variables -->
     <div class="col-span-1 md:col-span-2 md:row-span-1 rounded-3xl bg-surface border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden group">
-      <p id="bento-metric-label" class="text-neutral-400 text-sm uppercase tracking-wider mb-2 font-mono">
-        {topProject?.data.metrics?.[0]?.label || metric.label}
-      </p>
-      <div class="flex items-baseline gap-2">
+    <p id="bento-metric-label" class="text-neutral-400 text-sm uppercase tracking-wider mb-2 font-mono">
+        {metricLabel}
+    </p>
+    <div class="flex items-baseline gap-2">
         <h2 id="bento-metric-value" class="text-5xl md:text-6xl font-bold text-white tracking-tighter">
-          {topProject?.data.metrics?.[0]?.value || metric.value}
+        {metricValue}
         </h2>
-      </div>
-      <p id="bento-metric-desc" class="text-sm text-neutral-500 mt-2">
-        {topProject?.data.metrics?.[0]?.description || metric.description}
-      </p>
+    </div>
+    <p id="bento-metric-desc" class="text-sm text-neutral-500 mt-2">
+        {metricDesc}
+    </p>
     </div>
 
     <!-- 3. Dynamic Tech Stack Tile -->
@@ -116,6 +124,9 @@ const topPost = posts[0];
     </a>
 
   </div>
+    <span class="text-3xl font-bold">{metricValue || metric.value}</span>
+    <span>{metricLabel}</span>
+    <p>{metricDesc}</p>
 </section>
 
 <!-- Reacts strictly to hero custom event toggles -->

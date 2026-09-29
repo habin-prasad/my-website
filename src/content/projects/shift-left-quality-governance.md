@@ -15,6 +15,7 @@ technologies:
   - "GitHub Actions"
   - "Datadog"
 featured: true
+draft: true
 ---
 
 ### Situation

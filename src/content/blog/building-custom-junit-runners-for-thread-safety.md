@@ -2,7 +2,7 @@
 title: "Building Custom JUnit Runners for Thread Safety and Shared Context Isolation"
 description: "How custom JVM test runners isolate ThreadLocal variables, classloader states, and static state mutations during parallel multi-threaded test runs."
 pubDate: 2014-08-01
-draft: false
+draft: true
 tags: ["Java", "JUnit", "Concurrency", "JVM", "Multithreading"]
 ---
 

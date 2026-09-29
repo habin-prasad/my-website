@@ -16,6 +16,7 @@ technologies:
   - "Terraform"
   - "Datadog"
 featured: true
+draft: true
 ---
 
 ### Situation

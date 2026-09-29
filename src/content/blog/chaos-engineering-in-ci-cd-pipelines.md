@@ -2,7 +2,7 @@
 title: "Automating Chaos Engineering in Staging with Chaos Mesh and Kubernetes"
 description: "Injecting pod kills, CPU spikes, and network latency in automated CI runs to validate circuit breakers and self-healing systems."
 pubDate: 2017-02-05
-draft: false
+draft: true
 tags: ["Chaos Engineering", "Kubernetes", "Resilience", "Chaos Mesh", "SRE"]
 ---
 

@@ -5,8 +5,9 @@ import { getCollection } from 'astro:content';
 import KineticHero from '../components/KineticHero.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 
-const projects = await getCollection('projects');
-const blogPosts = await getCollection('blog');
+const projects = (await getCollection('projects')).filter((p) => !p.data.draft) || [];
+
+const blogPosts = (await getCollection('blog')).filter((p) => !p.data.draft) || [];
 
 // Map actual project domains and metrics to KineticHero options
 const domainMap: Record<string, { label: string; text: string; desc: string }> = {

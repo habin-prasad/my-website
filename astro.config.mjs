@@ -1,35 +1,34 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 import tailwindcss from "@tailwindcss/vite";
-
 import cloudflare from '@astrojs/cloudflare';
-import { defineConfig, envField } from 'astro/config'; // <-- Ensure envField is imported here
 
 export default defineConfig({
-  site: 'https://my-website.habinprasad163.workers.dev/',
+  site: 'https://habin.gatedqass.in/',
   integrations: [sitemap(), mdx()],
   output: 'server',
   markdown: {
     shikiConfig: {
-      theme: 'one-dark-pro', // Match your dark glass theme
+      theme: 'one-dark-pro',
       wrap: false,
     },
   },
-  adapter: cloudflare(),
-  vite: {
-    optimizeDeps: {
-      exclude: ['@resvg/resvg-wasm'],
+  adapter: cloudflare({
+    platformProxy: {
+      enabled: true,
+      configPath: './wrangler.jsonc',
     },
+  }),
+  vite: {
     plugins: [tailwindcss()],
   },
   env: {
     schema: {
-      // Server-only secrets
       TURNSTILE_SECRET_KEY: envField.string({
         context: 'server',
         access: 'secret',
-        optional: true, // Allows build to pass without key
+        optional: true,
       }),
       UPSTASH_REDIS_REST_URL: envField.string({
         context: 'server',
@@ -41,13 +40,11 @@ export default defineConfig({
         access: 'secret',
         optional: true,
       }),
-      // Client-exposed variables
       PUBLIC_TURNSTILE_SITE_KEY: envField.string({
         context: 'client',
         access: 'public',
-        optional: true, // Allows build to pass without key
-        
+        optional: true,
       }),
-    },},
+    },
+  },
 });
-

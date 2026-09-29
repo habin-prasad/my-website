@@ -12,6 +12,7 @@ technologies:
   - "GitHub Actions"
   - "Kafka"
 featured: false
+draft: true
 ---
 
 ### Situation

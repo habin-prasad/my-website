@@ -16,6 +16,7 @@ technologies:
   - "Prometheus"
   - "AWS EKS"
 featured: false
+draft: true
 ---
 
 ### Situation

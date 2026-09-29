@@ -18,7 +18,7 @@
 
       copyBtn.addEventListener('click', async () => {
         const code = block.querySelector('code');
-        const textToCopy = code ? code.innerText : block.innerText;
+        const textToCopy = code ? (code as HTMLElement).innerText : (block as HTMLElement).innerText;
 
         try {
           await navigator.clipboard.writeText(textToCopy);

@@ -16,6 +16,7 @@ technologies:
   - "Scikit-Learn"
   - "Docker"
 featured: false
+draft: true
 ---
 
 ### Situation
