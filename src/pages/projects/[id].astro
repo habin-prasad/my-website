@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry, render } from 'astro:content';
+import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 export const prerender = true;
 
@@ -18,7 +18,7 @@ const { id } = Astro.params;
 let project = Astro.props.project;
 
 if (!project && id) {
-  project = await getEntry('projects', id);
+  project = (await getEntry('projects', id)) as CollectionEntry<'projects'>;
 }
 
 if (!project) {

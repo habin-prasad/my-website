@@ -11,30 +11,30 @@ const blogPosts = (await getCollection('blog')).filter((p) => !p.data.draft) || 
 
 // Map actual project domains and metrics to KineticHero options
 const domainMap: Record<string, { label: string; text: string; desc: string }> = {
-  'API & Microservices': {
+  'Platform & Infrastructure': {
     label: 'Scale',
     text: 'scalable infrastructure.',
     desc: "When traffic spikes, systems shouldn't sweat. I build distributed, fault-tolerant architectures that stay up when it matters."
   },
-  'Security & Auth': {
-    label: 'Security',
-    text: 'zero-trust environments.',
-    desc: 'Data breaches end companies. I implement enterprise-grade rate limiting, bot protection, and strict API validation.'
+  'Quality & Automation': {
+    label: 'Quality',
+    text: 'automation-first quality.',
+    desc: 'Manual testing slows teams down. I build autonomous quality platforms that catch issues before they reach production.'
   },
-  'Performance Optimization': {
-    label: 'Speed',
-    text: 'sub-100ms latency.',
-    desc: 'Milliseconds cost millions. I optimize caching layers and database queries to deliver instant global responses.'
+  'Engineering Leadership': {
+    label: 'Leadership',
+    text: 'team-scale engineering.',
+    desc: 'Great systems start with great teams. I lead engineering organizations to build resilient, high-impact platforms.'
   },
-  'Automation & CI/CD': {
-    label: 'Automation',
-    text: 'seamless deployment pipelines.',
-    desc: 'Manual deployments slow down engineering. I automate CI/CD workflows and infrastructure provisioning for reliable releases.'
+  'Distributed Systems': {
+    label: 'Scale',
+    text: 'distributed systems.',
+    desc: 'Building resilient, high-throughput distributed architectures that scale globally.'
   },
-  'Cloud Architecture': {
-    label: 'Cloud',
-    text: 'resilient cloud systems.',
-    desc: 'Designing highly available multi-region architecture tailored for high throughput and zero downtime.'
+  'Developer Experience': {
+    label: 'DX',
+    text: 'developer productivity.',
+    desc: 'Engineers ship faster with the right tools. I build developer platforms that eliminate friction and accelerate delivery.'
   }
 };
 
@@ -60,7 +60,7 @@ const heroOptions = projectDomains.map((domain) => {
 // Fallback if collections are empty
 if (heroOptions.length === 0) {
   heroOptions.push({
-    key: 'API & Microservices',
+    key: 'Platform & Infrastructure',
     label: 'Scale',
     text: 'scalable infrastructure.',
     desc: "When traffic spikes, systems shouldn't sweat. I build distributed architectures that stay up when it matters."
@@ -70,12 +70,17 @@ if (heroOptions.length === 0) {
 // Tech stack aggregation
 const allTechnologies = [...new Set(projects.flatMap((p) => p.data.technologies || []))];
 
-// Primary metric aggregation
-const primaryMetric = projects.flatMap((p) => p.data.metrics || [])[0] || {
-  value: '-400ms',
-  label: 'p99 API Latency',
-  description: 'Reduction in response time via edge Redis caching layer.'
-};
+// Primary metric aggregation — normalize string metrics to MetricItem objects
+const rawMetric = projects.flatMap((p) => p.data.metrics || [])[0];
+const primaryMetric = rawMetric
+  ? typeof rawMetric === 'string'
+    ? { value: rawMetric, label: 'Impact Metric', description: 'Key performance indicator.' }
+    : rawMetric
+  : {
+    value: '-400ms',
+    label: 'p99 API Latency',
+    description: 'Reduction in response time via edge Redis caching layer.'
+  };
 ---
 
 <Base title="Head of Automation & Tech Lead">

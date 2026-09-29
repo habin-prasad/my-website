@@ -1,8 +1,8 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
----
 import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
+---
 
 <PageLayout title="Contact">
   <!-- 1. Load Cloudflare Turnstile JS -->
