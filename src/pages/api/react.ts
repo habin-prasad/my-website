@@ -1,20 +1,19 @@
 import type { APIRoute } from 'astro';
 import { queryDb } from '../../lib/db';
 import { reactRateLimit } from '../../lib/r_limit';
-export const prerender = false; // Edge serverless route
 
-// Helper to extract real IP across Cloudflare & reverse proxies
-function getClientIP(request: Request): string {
+export const prerender = false;
+
+function getClientIP(request: Request, clientAddress?: string): string {
   return (
     request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    clientAddress ||
     '127.0.0.1'
   );
 }
 
-// ---------------------------------------------------------------------------
-// GET: Fetch reaction count with Edge/Browser Caching
-// ---------------------------------------------------------------------------
+// GET: Query Reaction Count (Public Cache Edge Layer)
 export const GET: APIRoute = async ({ request }) => {
   const url = new URL(request.url);
   const slug = url.searchParams.get('slug');
@@ -38,24 +37,25 @@ export const GET: APIRoute = async ({ request }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=60, s-maxage=60, stale-while-revalidate=300',
+        'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
       },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Database query failed' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Database query failed' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };
 
-// ---------------------------------------------------------------------------
-// POST: Increment reaction count with Upstash Redis Rate Limiting & Atomic UPSERT
-// ---------------------------------------------------------------------------
-export const POST: APIRoute = async ({ request }) => {
-  const clientIP = getClientIP(request);
+// POST: Increment Reaction Count (Rate Limited + Atomic Retaining UPSERT)
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+  const clientIP = getClientIP(request, clientAddress);
   
-  // Upstash sliding window rate limit
   const { success, limit, remaining, reset } = await reactRateLimit.limit(`react_${clientIP}`);
   
   const rateLimitHeaders = {
+    'Content-Type': 'application/json',
     'X-RateLimit-Limit': limit.toString(),
     'X-RateLimit-Remaining': remaining.toString(),
     'X-RateLimit-Reset': reset.toString(),
@@ -67,7 +67,6 @@ export const POST: APIRoute = async ({ request }) => {
       {
         status: 429,
         headers: {
-          'Content-Type': 'application/json',
           'Retry-After': Math.ceil((reset - Date.now()) / 1000).toString(),
           ...rateLimitHeaders,
         },
@@ -76,10 +75,11 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const { slug } = await request.json();
+    const body = await request.json();
+    const slug = body.slug;
 
     if (!slug) {
-      return new Response(JSON.stringify({ error: 'Missing slug' }), {
+      return new Response(JSON.stringify({ error: 'Missing target slug' }), {
         status: 400,
         headers: rateLimitHeaders,
       });
@@ -102,10 +102,7 @@ export const POST: APIRoute = async ({ request }) => {
       JSON.stringify({ slug, count: newCount }),
       {
         status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          ...rateLimitHeaders,
-        },
+        headers: rateLimitHeaders,
       }
     );
   } catch (err) {

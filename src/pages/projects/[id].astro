@@ -40,34 +40,34 @@ const relatedBlogs = allBlogs.filter((post) => {
 ---
 
 <PageLayout title={data.title} subtitle={`${data.role || 'Tech Lead'} · ${data.period || 'Active'}`}>
-  <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+  <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-8 md:space-y-12">
     
     <!-- Hero Header -->
-    <header class="p-8 md:p-12 rounded-3xl bg-surface border border-white/10 glass-card space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
-        <span class="px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent font-bold uppercase tracking-wider">
+    <header class="p-5 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-surface border border-white/10 glass-card space-y-5 md:space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+        <span class="px-2.5 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent font-bold uppercase tracking-wider text-[10px] sm:text-xs">
           {data.domain}
         </span>
-        {data.period && <span class="text-neutral-400">{data.period}</span>}
+        {data.period && <span class="text-neutral-400 text-xs">{data.period}</span>}
       </div>
       
-      <p class="text-xl md:text-2xl text-neutral-200 leading-relaxed font-light">
+      <p class="text-lg sm:text-xl md:text-2xl text-neutral-200 leading-relaxed font-light">
         {data.summary}
       </p>
 
       <!-- Key Metrics Highlight -->
       {data.metrics && data.metrics.length > 0 && (
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-white/10">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-white/10">
           {data.metrics.map((metric: any) => (
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/5">
-              <span class="text-xs font-mono text-neutral-400 uppercase block mb-1">
+            <div class="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/5">
+              <span class="text-[10px] sm:text-xs font-mono text-neutral-400 uppercase block mb-1 truncate">
                 {typeof metric === 'string' ? 'Impact Metric' : metric.label}
               </span>
-              <span class="text-2xl md:text-3xl font-bold text-white tracking-tight">
+              <span class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight block">
                 {typeof metric === 'string' ? metric : metric.value}
               </span>
               {typeof metric !== 'string' && metric.description && (
-                <p class="text-xs text-neutral-400 mt-1">{metric.description}</p>
+                <p class="text-[11px] sm:text-xs text-neutral-400 mt-1 line-clamp-2">{metric.description}</p>
               )}
             </div>
           ))}
@@ -77,10 +77,10 @@ const relatedBlogs = allBlogs.filter((post) => {
       <!-- Tech Stack Badges -->
       {data.technologies && data.technologies.length > 0 && (
         <div class="pt-4 border-t border-white/10">
-          <span class="text-xs font-mono text-neutral-500 uppercase block mb-3">SYSTEM TECH STACK</span>
-          <div class="flex flex-wrap gap-2">
+          <span class="text-[10px] sm:text-xs font-mono text-neutral-500 uppercase block mb-2 sm:mb-3">SYSTEM TECH STACK</span>
+          <div class="flex flex-wrap gap-1.5 sm:gap-2">
             {data.technologies.map((tech: string) => (
-              <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5 font-mono text-xs text-neutral-300">
+              <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10 bg-white/5 font-mono text-[11px] sm:text-xs text-neutral-300">
                 {tech}
               </span>
             ))}
@@ -90,14 +90,14 @@ const relatedBlogs = allBlogs.filter((post) => {
     </header>
 
     <!-- Post Content Container -->
-    <div class="p-8 md:p-12 rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent">
+    <div class="p-5 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent prose-pre:text-xs sm:prose-pre:text-sm">
       <Content />
     </div>
 
     <!-- Related Blog Posts Section -->
     {relatedBlogs.length > 0 && (
-      <section class="space-y-6">
-        <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+      <section class="space-y-4 sm:space-y-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2 sm:gap-3">
           <span class="text-accent font-mono text-sm">//</span> Related Writing & Notes
         </h2>
         
@@ -105,13 +105,13 @@ const relatedBlogs = allBlogs.filter((post) => {
           {relatedBlogs.map((blog) => (
             <a 
               href={`/blog/${(blog as any).slug ?? blog.id.replace(/\.[^/.]+$/, "")}`}
-              class="group p-6 rounded-2xl bg-surface border border-white/10 hover:border-accent/50 transition-all flex flex-col justify-between"
+              class="group p-5 sm:p-6 rounded-2xl bg-surface border border-white/10 hover:border-accent/50 transition-all flex flex-col justify-between"
             >
               <div>
-                <h3 class="text-lg font-bold text-white group-hover:text-accent transition-colors mb-2">
+                <h3 class="text-base sm:text-lg font-bold text-white group-hover:text-accent transition-colors mb-2">
                   {blog.data.title}
                 </h3>
-                <p class="text-sm text-neutral-400 line-clamp-2 mb-4">
+                <p class="text-xs sm:text-sm text-neutral-400 line-clamp-2 mb-4">
                   {blog.data.description}
                 </p>
               </div>

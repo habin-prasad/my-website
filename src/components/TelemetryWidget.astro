@@ -3,24 +3,20 @@
 ---
 
 <div class="fixed bottom-6 left-6 z-40 hidden md:block">
-  <div class="group relative flex items-center gap-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full pl-3 pr-4 py-2 shadow-2xl cursor-default overflow-hidden">
-    <!-- Hover glow effect -->
+  <div class="group relative flex items-center gap-3 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full pl-3 pr-4 py-2 shadow-2xl cursor-default overflow-hidden">
     <div class="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     
-    <!-- Pulsing Status Dot -->
     <div class="relative flex h-2.5 w-2.5 ml-1">
       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60"></span>
       <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent shadow-[0_0_8px_#ccff00]"></span>
     </div>
 
-    <!-- Data Stream -->
-    <div class="font-mono text-[10px] sm:text-xs text-neutral-400 flex items-center gap-2 lg:gap-3 tracking-wider">
+    <div class="font-mono text-xs text-neutral-400 flex items-center gap-3 tracking-wider">
       <span class="text-white font-medium">SYS.OK</span>
       <span class="w-px h-3 bg-white/20"></span>
       
-      <!-- Hyper-localized to Bengaluru Edge -->
-      <span class="hidden sm:inline">EDGE: <span class="text-white">BLR1</span></span>
-      <span class="hidden sm:inline w-px h-3 bg-white/20"></span>
+      <span>EDGE: <span class="text-white">BLR1</span></span>
+      <span class="w-px h-3 bg-white/20"></span>
       
       <span>REDIS: <span id="redis-latency" class="text-accent font-medium">12ms</span></span>
     </div>
@@ -28,26 +24,21 @@
 </div>
 
 <script>
-  // Simulate live Redis cache latency fluctuations
-  // You can replace this later with an actual fetch('/api/ping') to your Upstash instance
   document.addEventListener('astro:page-load', () => {
     const latencyEl = document.getElementById('redis-latency');
     if (!latencyEl) return;
 
     setInterval(() => {
-      // Generate a realistic latency between 8ms and 18ms
       const baseLatency = 12;
       const jitter = Math.floor(Math.random() * 6) - 3;
       const currentLatency = baseLatency + jitter;
       
       latencyEl.textContent = `${currentLatency}ms`;
-      
-      // Flash white briefly when updated
       latencyEl.style.color = '#ffffff';
       setTimeout(() => {
         latencyEl.style.color = 'var(--tw-colors-accent, #ccff00)';
       }, 150);
       
-    }, 3500); // Update every 3.5 seconds
+    }, 3500);
   });
 </script>

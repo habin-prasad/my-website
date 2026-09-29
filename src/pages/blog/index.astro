@@ -41,16 +41,37 @@ const categories = [
 ---
 
 <Base title="Engineering Journal">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
     
     <!-- Header -->
-    <header class="space-y-2 border-b border-white/10 pb-6 mb-8">
+    <header class="space-y-2 border-b border-white/10 pb-6 mb-6 md:mb-8">
       <span class="text-xs font-mono text-accent uppercase tracking-widest block">TECHNICAL WRITING</span>
       <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">Engineering Journal</h1>
       <p class="text-neutral-400 text-sm md:text-base max-w-2xl">
         Notes, architecture breakdowns, and strategy on platforms, automation, and leadership.
       </p>
     </header>
+
+    <!-- Mobile Horizontal Scroll Filter (< lg) -->
+    <div class="lg:hidden sticky top-0 z-30 bg-background/90 backdrop-blur-md -mx-4 px-4 py-3 mb-6 border-b border-white/10">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+        {categories.map((cat) => (
+          <button
+            data-category={cat.key}
+            data-tags={JSON.stringify(cat.tags || [])}
+            class={`pillar-btn shrink-0 px-3.5 py-2 rounded-full border font-mono text-xs flex items-center gap-2 transition-all ${
+              cat.key === 'all'
+                ? cat.colorClass + ' active-pillar'
+                : 'border-white/10 bg-white/5 text-neutral-400'
+            }`}
+            data-active-class={cat.colorClass}
+          >
+            <span class={`w-2 h-2 rounded-full shrink-0 ${cat.dotColor}`}></span>
+            <span class="whitespace-nowrap">{cat.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
 
     <!-- Main Grid Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
@@ -81,8 +102,8 @@ const categories = [
         </div>
       </main>
 
-      <!-- Compact Sidebar Pillar Palette (Spans 1 Column, Sticky) -->
-      <aside class="lg:col-span-1 lg:sticky lg:top-24">
+      <!-- Desktop Sidebar Pillar Palette (Spans 1 Column, Sticky) -->
+      <aside class="hidden lg:block lg:col-span-1 lg:sticky lg:top-24">
         <div class="p-5 rounded-2xl bg-surface border border-white/10 glass-card space-y-4">
           <div class="flex items-center justify-between border-b border-white/10 pb-3">
             <span class="text-xs font-mono text-accent uppercase tracking-wider">PILLAR PALETTE</span>
@@ -138,18 +159,21 @@ const categories = [
         btn.addEventListener('click', () => {
           const categoryKey = btn.getAttribute('data-category');
           const targetTags = JSON.parse(btn.getAttribute('data-tags') || '[]');
-          const activeClass = btn.getAttribute('data-active-class') || '';
 
-          // Reset all buttons to default inactive state
+          // Sync active state across all buttons (both mobile bar & desktop sidebar)
           buttons.forEach((b) => {
-            const bClass = b.getAttribute('data-active-class') || '';
-            bClass.split(' ').forEach((cls) => b.classList.remove(cls));
-            b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
-          });
+            const isTarget = b.getAttribute('data-category') === categoryKey;
+            const activeClass = b.getAttribute('data-active-class') || '';
+            const activeClasses = activeClass.split(' ');
 
-          // Activate selected button
-          btn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
-          activeClass.split(' ').forEach((cls) => btn.classList.add(cls));
+            if (isTarget) {
+              b.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
+              activeClasses.forEach((cls) => cls && b.classList.add(cls));
+            } else {
+              activeClasses.forEach((cls) => cls && b.classList.remove(cls));
+              b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
+            }
+          });
 
           let visibleCount = 0;
 
@@ -173,7 +197,8 @@ const categories = [
           });
 
           if (label) {
-            const categoryLabel = btn.querySelector('span')?.textContent || 'ALL WRITING';
+            const matchedBtn = Array.from(buttons).find(b => b.getAttribute('data-category') === categoryKey);
+            const categoryLabel = matchedBtn?.innerText?.trim() || 'ALL WRITING';
             label.textContent = `CATEGORY: ${categoryLabel.toUpperCase()} (${visibleCount})`;
           }
         });

@@ -13,7 +13,10 @@
     "pagefind:dev": "astro build && pagefind --site dist/client --output-path public/pagefind",
     "generate-types": "wrangler types",
     "lint": "astro check",
-    "test": "astro check"
+    "test": "astro check",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -21,6 +24,7 @@
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@upstash/ratelimit": "^2.1.0",
     "@upstash/redis": "^1.38.4",

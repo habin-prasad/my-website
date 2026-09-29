@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base title="404: Page Not Found">
-  <section class="error-container">
+  <section class="error-container px-4">
     <div class="error-badge">404 Error</div>
     <h1>Page not found</h1>
     <p class="error-message">
@@ -29,7 +29,7 @@ import Base from '../layouts/Base.astro';
     justify-content: center;
     text-align: center;
     min-height: 50vh;
-    padding: 2rem 0;
+    padding: 2rem 1rem;
   }
 
   .error-badge {
@@ -45,38 +45,67 @@ import Base from '../layouts/Base.astro';
   }
 
   h1 {
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     font-weight: 700;
     margin: 0 0 0.75rem 0;
     color: var(--text);
     letter-spacing: -0.02em;
   }
 
+  @media (min-width: 640px) {
+    h1 {
+      font-size: 2.25rem;
+    }
+  }
+
   .error-message {
     color: var(--muted);
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     max-width: 440px;
     margin: 0 0 2rem 0;
     line-height: 1.6;
   }
 
+  @media (min-width: 640px) {
+    .error-message {
+      font-size: 1.05rem;
+    }
+  }
+
   .action-group {
     display: flex;
+    flex-direction: column;
+    width: 100%;
     gap: 0.75rem;
-    flex-wrap: wrap;
-    justify-content: center;
+  }
+
+  @media (min-width: 640px) {
+    .action-group {
+      flex-direction: row;
+      width: auto;
+      justify-content: center;
+    }
   }
 
   .btn-primary, .btn-secondary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.6rem 1.1rem;
+    padding: 0.75rem 1.1rem;
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
     transition: all 0.15s ease;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .btn-primary, .btn-secondary {
+      width: auto;
+      padding: 0.6rem 1.1rem;
+    }
   }
 
   .btn-primary {
@@ -86,7 +115,6 @@ import Base from '../layouts/Base.astro';
 
   .btn-primary:hover {
     opacity: 0.9;
-    transform: translateY(-1px);
   }
 
   .btn-secondary {
@@ -97,6 +125,5 @@ import Base from '../layouts/Base.astro';
 
   .btn-secondary:hover {
     border-color: var(--accent);
-    transform: translateY(-1px);
   }
 </style>

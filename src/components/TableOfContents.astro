@@ -10,18 +10,24 @@ interface Props {
 }
 
 const { headings } = Astro.props;
-
-// Filter out h1 and deep headers (h4+) to keep ToC clean
 const filteredHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 
 {filteredHeadings.length > 0 && (
-  <nav class="toc-container" aria-label="Table of Contents">
-    <div class="toc-title">On This Page</div>
-    <ul class="toc-list">
+  <nav class="space-y-3" aria-label="Table of Contents">
+    <div class="text-xs font-mono font-bold text-neutral-200 uppercase tracking-wider">
+      On This Page
+    </div>
+    <ul class="space-y-2 text-xs font-mono">
       {filteredHeadings.map(h => (
-        <li class={`toc-item depth-${h.depth}`}>
-          <a href={`#${h.slug}`}>{h.text}</a>
+        <li class={h.depth === 3 ? "pl-3 border-l border-white/10" : ""}>
+          <a 
+            href={`#${h.slug}`}
+            class="toc-link block text-neutral-400 hover:text-accent transition-colors leading-relaxed truncate"
+            data-slug={h.slug}
+          >
+            {h.text}
+          </a>
         </li>
       ))}
     </ul>
@@ -29,21 +35,24 @@ const filteredHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 )}
 
 <script>
-  // Highlight active heading on scroll
   function initTocHighlight() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const id = entry.target.getAttribute('id');
-        const tocLink = document.querySelector(`.toc-list a[href="#${id}"]`);
+        const tocLink = document.querySelector(`.toc-link[data-slug="${id}"]`);
 
         if (entry.isIntersecting && tocLink) {
-          document.querySelectorAll('.toc-list a').forEach(a => a.classList.remove('active'));
-          tocLink.classList.add('active');
+          document.querySelectorAll('.toc-link').forEach(a => {
+            a.classList.remove('text-accent', 'font-bold');
+            a.classList.add('text-neutral-400');
+          });
+          tocLink.classList.add('text-accent', 'font-bold');
+          tocLink.classList.remove('text-neutral-400');
         }
       });
     }, { rootMargin: '-80px 0px -60% 0px' });
 
-    document.querySelectorAll('.post-content h2, .post-content h3').forEach(heading => {
+    document.querySelectorAll('article h2, article h3').forEach(heading => {
       observer.observe(heading);
     });
   }
@@ -51,50 +60,3 @@ const filteredHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
   document.addEventListener('DOMContentLoaded', initTocHighlight);
   document.addEventListener('astro:page-load', initTocHighlight);
 </script>
-
-<style>
-  .toc-container {
-    background: var(--surface);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--surface-border);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    font-size: 0.85rem;
-  }
-
-  .toc-title {
-    font-weight: 700;
-    font-family: var(--font-mono);
-    color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .toc-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .toc-item.depth-3 {
-    padding-left: 0.85rem;
-  }
-
-  .toc-list a {
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.15s ease;
-    display: block;
-    line-height: 1.4;
-  }
-
-  .toc-list a:hover,
-  .toc-list a.active {
-    color: var(--accent);
-  }
-</style>

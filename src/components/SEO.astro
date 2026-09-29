@@ -25,6 +25,11 @@ const socialImageURL = new URL(image, canonicalURL);
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 
+<!-- Mobile Theme & WebApp Support -->
+<meta name="theme-color" content="#09090b" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
 <!-- Open Graph / Facebook / LinkedIn -->
 <meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:url" content={canonicalURL} />

@@ -1,5 +1,4 @@
 ---
-// src/pages/[slug].astro
 export const prerender = true;
 
 import { getCollection, render } from 'astro:content';
@@ -9,9 +8,7 @@ export async function getStaticPaths() {
   const pageEntries = await getCollection('pages');
 
   return pageEntries.map((entry) => {
-    // Fallback for Astro 4 (slug) vs Astro 5 (id)
     const rawSlug = (entry as any).slug ?? entry.id.replace(/\.[^/.]+$/, "");
-    // Strip .md or .mdx extension
     const slug = rawSlug.replace(/\.[^/.]+$/, '');
 
     return {
@@ -26,8 +23,7 @@ const { Content } = await render(entry);
 ---
 
 <PageLayout title={entry.data.title}>
-  <main class="max-w-3xl mx-auto py-12 px-4 prose dark:prose-invert">
-    <h1>{entry.data.title}</h1>
+  <div class="max-w-3xl mx-auto py-6 sm:py-12 px-0 sm:px-4 prose dark:prose-invert">
     <Content />
-  </main>
+  </div>
 </PageLayout>

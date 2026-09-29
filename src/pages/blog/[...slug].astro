@@ -29,31 +29,33 @@ const ogImageUrl = `/og/${slug}.png`;
 <Base title={post.data.title} description={post.data.description} image={ogImageUrl}>
   <ProgressBar />
 
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 md:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
       
       <!-- Article Content Body -->
-      <article class="lg:col-span-3 space-y-8">
-        <header class="p-8 rounded-3xl bg-surface border border-white/10 glass-card space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-neutral-400">
+      <article class="lg:col-span-3 space-y-6 sm:space-y-8 w-full overflow-hidden">
+        
+        <!-- Header -->
+        <header class="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-surface border border-white/10 glass-card space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-neutral-400">
             <time datetime={post.data.pubDate.toISOString()}>
               {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </time>
-            <span>ENGINEERING JOURNAL</span>
+            <span class="text-[10px] sm:text-xs">ENGINEERING JOURNAL</span>
           </div>
 
-          <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">
+          <h1 class="text-2xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight">
             {post.data.title}
           </h1>
 
-          <p class="text-lg text-neutral-300 leading-relaxed">
+          <p class="text-sm sm:text-lg text-neutral-300 leading-relaxed">
             {post.data.description}
           </p>
 
           {post.data.tags && post.data.tags.length > 0 && (
             <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
               {post.data.tags.map((tag: string) => (
-                <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5 font-mono text-xs text-accent">
+                <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10 bg-white/5 font-mono text-[11px] sm:text-xs text-accent">
                   #{tag}
                 </span>
               ))}
@@ -61,17 +63,33 @@ const ogImageUrl = `/og/${slug}.png`;
           )}
         </header>
 
-        <div class="p-8 md:p-12 rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent">
+        <!-- Collapsible Mobile Table of Contents (< lg) -->
+        {headings && headings.length > 0 && (
+          <div class="block lg:hidden">
+            <details class="p-4 rounded-2xl bg-surface border border-white/10 glass-card group">
+              <summary class="font-mono text-xs font-bold text-accent uppercase tracking-wider cursor-pointer flex items-center justify-between">
+                <span>ON THIS PAGE</span>
+                <span class="transition-transform group-open:rotate-180">↓</span>
+              </summary>
+              <div class="pt-3 border-t border-white/5 mt-3">
+                <TableOfContents headings={headings} />
+              </div>
+            </details>
+          </div>
+        )}
+
+        <!-- Main Content -->
+        <div class="p-5 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent prose-pre:max-w-full prose-pre:overflow-x-auto text-sm sm:text-base">
           <Content />
         </div>
 
-        <div class="pt-6">
+        <div class="pt-4 sm:pt-6">
           <ReactionButton slug={slug} />
         </div>
       </article>
 
-      <!-- Sticky Table of Contents Sidebar -->
-      <aside class="lg:col-span-1 lg:sticky lg:top-24 space-y-6">
+      <!-- Desktop Sticky Table of Contents Sidebar (≥ lg) -->
+      <aside class="hidden lg:block lg:col-span-1 lg:sticky lg:top-24 space-y-6">
         <div class="p-6 rounded-3xl bg-surface border border-white/10 glass-card">
           <TableOfContents headings={headings} />
         </div>

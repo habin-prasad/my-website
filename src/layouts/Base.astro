@@ -1,11 +1,12 @@
 ---
-import '../styles/global.css'; // Adjust path if your CSS is at src/global.css
+import '../styles/global.css';
 import SearchTrigger from '../components/SearchTrigger.astro';
 import SearchModal from '../components/SearchModal.astro';
 import { ClientRouter } from 'astro:transitions';
 import TelemetryWidget from '../components/TelemetryWidget.astro';
 import CmdKModal from '../components/CmdKModal.astro';
 import SEO from '../components/SEO.astro';
+import MobileNav from '../components/MobileNav.astro';
 
 import { PROFILE } from '../config/profile';
 import { SOCIAL_LINKS } from '../config/social';
@@ -42,7 +43,8 @@ interface Props {
   description?: string;
   image?: string;
 }
-const SITE_NAME = "hp"; // Define site name variable once
+
+const SITE_NAME = "hp";
 const DEFAULT_DESCRIPTION = "Personal website & engineering journal.";
 
 const { title, description = DEFAULT_DESCRIPTION, image = '/og-image.png' } = Astro.props;
@@ -51,14 +53,15 @@ const currentPath = Astro.url.pathname;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com');
 ---
 <!doctype html>
-<html lang="en" class="dark h-full bg-[#09090b] text-[#fafafa] antialiased">
+<html lang="en" class="dark h-full bg-[#09090b] text-[#fafafa] antialiased selection:bg-[#ccff00] selection:text-black">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
-    <SEO description="{description}" title="{title}"/>
+    <SEO description={description} title={title} />
+    
     <!-- Open Graph / Social -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -72,42 +75,58 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-    <!-- Pagefind 1.5.0 Component UI Assets -->
+    <!-- Pagefind Assets -->
     <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-ui.js" is:inline></script>
     <link rel="alternate" type="application/rss+xml" title="Habin's Blog" href="/rss.xml" />
     <ClientRouter />
   </head>
-  <body class="min-h-full flex flex-col overflow-x-clip selection:bg-[#ccff00] selection:text-black">
-    <header class="header">
-      <nav class="nav">
-        <a href="/" class="nav-brand">habin<span class="brand-accent">.quality</span></a>
+
+  <body class="min-h-full flex flex-col overflow-x-clip bg-[#09090b] text-[#fafafa]">
+    
+    <!-- Sticky Navigation Header -->
+    <header class="sticky top-0 z-40 w-full border-b border-white/10 bg-[#09090b]/80 backdrop-blur-md transition-all">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="/" class="text-base font-mono font-bold tracking-tight text-white hover:text-accent transition-colors">
+          habin<span class="text-accent font-mono">.quality</span>
+        </a>
         
-        <div class="nav-links">
-          <a href="/about" class={currentPath.startsWith('/about') ? 'active' : ''}>About</a>
-          <a href="/blog" class={currentPath.startsWith('/blog') ? 'active' : ''}>Blog</a>
-          <a href="/projects" class={currentPath.startsWith('/projects') ? 'active' : ''}>Projects</a>
+        <!-- Desktop Nav Links -->
+        <div class="hidden md:flex items-center gap-6 text-sm font-mono">
+          <a href="/about" class={`transition-colors hover:text-accent ${currentPath.startsWith('/about') ? 'text-accent font-bold' : 'text-neutral-400'}`}>About</a>
+          <a href="/blog" class={`transition-colors hover:text-accent ${currentPath.startsWith('/blog') ? 'text-accent font-bold' : 'text-neutral-400'}`}>Blog</a>
+          <a href="/projects" class={`transition-colors hover:text-accent ${currentPath.startsWith('/projects') ? 'text-accent font-bold' : 'text-neutral-400'}`}>Projects</a>
           
           <SearchTrigger />
         </div>
-      </nav>
+
+        <!-- Mobile Quick Search Trigger -->
+        <div class="flex items-center md:hidden">
+          <SearchTrigger />
+        </div>
+      </div>
     </header>
 
-    <main class="main-content">
+    <!-- Main Content Stream with Bottom Mobile Dock Padding -->
+    <main class="flex-grow w-full pb-20 md:pb-10">
       <slot />
     </main>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <p>© 2026 Habin Prasad • gatedqass.in </p>
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-[#09090b] text-neutral-500 text-xs font-mono py-8 mb-16 md:mb-0">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p>© 2026 Habin Prasad • gatedqass.in</p>
+        <p class="text-[11px] text-neutral-600">Built with Astro & TailwindCSS</p>
       </div>
     </footer>
 
-
+    <!-- Interactive Overlays & Mobile App Dock -->
     <SearchModal />
     <TelemetryWidget />
     <CmdKModal />
+    <MobileNav />
   </body>
+
   <!-- JSON-LD Structured Data Injection -->
-<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 </html>
