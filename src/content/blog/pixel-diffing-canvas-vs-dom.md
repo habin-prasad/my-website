@@ -2,7 +2,7 @@
 title: "Pixel-Diffing at Scale: Canvas Rendering vs. DOM Structure Comparison"
 description: "Why image-based visual testing fails on dynamic anti-aliasing and how DOM-tree hashing reduces visual testing false positives by 95%."
 pubDate: 2013-08-10
-draft: false
+draft: true
 tags: ["Visual Testing", "Algorithms", "DOM", "Performance"]
 ---
 

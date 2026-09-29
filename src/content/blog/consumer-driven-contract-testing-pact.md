@@ -2,7 +2,7 @@
 title: "Eliminating Microservice Integration Bottlenecks with Consumer-Driven Contract Testing"
 description: "How Pact contract tests replace fragile, slow end-to-end integration environments by decoupling service provider and consumer deployments."
 pubDate: 2016-08-15
-draft: false
+draft: true
 tags: ["API", "Microservices", "Pact", "Architecture", "Testing Strategy"]
 ---
 

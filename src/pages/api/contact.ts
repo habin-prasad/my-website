@@ -58,8 +58,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     }
 
     // 4. Verify Turnstile Token with Cloudflare
+    const secretKey = TURNSTILE_SECRET_KEY || '';
     const verifyFormData = new URLSearchParams();
-    verifyFormData.append('secret', TURNSTILE_SECRET_KEY);
+    verifyFormData.append('secret', secretKey);
     verifyFormData.append('response', turnstileToken);
     verifyFormData.append('remoteip', identifier);
 

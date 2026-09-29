@@ -1,9 +1,8 @@
 ---
 interface Props {
-  slug: string;
+  slug?: string;
 }
-
-const { slug } = Astro.props;
+const { slug = 'default' } = Astro.props;
 ---
 
 <div class="reaction-container glass-card" data-slug={slug}>
@@ -24,15 +23,15 @@ const { slug } = Astro.props;
     if (!container) return;
 
     const slug = container.dataset.slug;
-    const btn = document.getElementById('clap-btn');
-    const countEl = document.getElementById('clap-count');
+    const btn = document.getElementById('clap-btn')!;
+    const countEl = document.getElementById('clap-count')!;
 
-    if (!slug || !btn || !countEl) return;
+    if (!slug) return;
 
     // Fetch initial count from our vendor-agnostic HTTP endpoint
     async function loadReactions() {
       try {
-        const res = await fetch(`/api/react?slug=${encodeURIComponent(slug)}`);
+        const res = await fetch(`/api/react?slug=${encodeURIComponent(slug as string)}`);
         if (res.ok) {
           const data = await res.json();
           countEl.textContent = data.count.toString();

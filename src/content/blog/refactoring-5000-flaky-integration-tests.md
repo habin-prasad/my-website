@@ -2,7 +2,7 @@
 title: "Refactoring 5,000 Flaky Integration Tests: Lessons from Legacy Monoliths"
 description: "Architectural patterns for categorizing, quarantining, and refactoring non-deterministic integration tests without halting feature delivery."
 pubDate: 2014-05-12
-draft: false
+draft: true
 tags: ["Legacy Code", "Refactoring", "Testing Strategy", "Technical Debt"]
 ---
 

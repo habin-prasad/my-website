@@ -11,6 +11,7 @@ technologies:
   - "CI/CD Strategy"
   - "Hiring & Mentorship"
 featured: true
+draft: true
 ---
 
 ### Situation

@@ -16,6 +16,7 @@ technologies:
   - "Go"
   - "Envoy"
 featured: false
+draft: true
 ---
 
 ### Situation

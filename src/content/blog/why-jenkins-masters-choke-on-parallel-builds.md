@@ -2,7 +2,7 @@
 title: "Why Jenkins Masters Choke on Parallel Builds (and How to Tame Executor Threads)"
 description: "A deep dive into JVM heap fragmentation, thread starvation, and socket leaks when scaling parallel test executors on legacy CI controllers."
 pubDate: 2013-03-15
-draft: false
+draft: true
 tags: ["CI/CD", "Jenkins", "Java", "Infrastructure", "Performance"]
 ---
 

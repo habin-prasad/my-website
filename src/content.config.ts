@@ -1,5 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection} from 'astro:content';
 import { glob } from 'astro/loaders';
+import { z } from 'zod';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/blog' }),
@@ -9,6 +10,7 @@ const blog = defineCollection({
     pubDate: z.coerce.date(),
     draft: z.boolean().default(false),
     tags: z.array(z.string()).optional(),
+    projectId: z.string().optional(),
   }),
 });
 
@@ -16,21 +18,29 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    role: z.string(),
-    period: z.string(),
     summary: z.string(),
-    // Expanded domain enum to cater to multiple professional hats
     domain: z.enum([
-      'Platform & Infrastructure',
-      'Quality & Automation',
-      'Engineering Leadership',
-      'Distributed Systems',
-      'Developer Experience'
+      "Platform & Infrastructure",
+      "Quality & Automation",
+      "Engineering Leadership",
+      "Distributed Systems",
+      "Developer Experience"
     ]),
+    role: z.string().optional(),
+    period: z.string().optional(),
     technologies: z.array(z.string()),
     featured: z.boolean().default(false),
-    metrics: z.array(z.string()).optional(),
-    leadershipHighlights: z.array(z.string()).optional(),
+    draft: z.boolean().default(false),
+    metrics: z.array(
+      z.union([
+        z.string(),
+        z.object({
+          value: z.string(),
+          label: z.string(),
+          description: z.string()
+        })
+      ])
+    ).optional(),
   }),
 });
 

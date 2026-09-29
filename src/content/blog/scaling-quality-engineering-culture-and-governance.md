@@ -2,7 +2,7 @@
 title: "Scaling Quality Engineering Culture: From Gatekeepers to Platform Enablers"
 description: "Transforming software organizations from centralized QA testing silos to developer-driven quality enablement using automated guardrails."
 pubDate: 2017-06-20
-draft: false
+draft: true
 tags: ["Leadership", "Quality Culture", "DevOps", "Engineering Excellence", "Architecture"]
 ---
 

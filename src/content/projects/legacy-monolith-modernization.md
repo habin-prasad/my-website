@@ -15,6 +15,7 @@ technologies:
   - "Jenkins"
   - "SonarQube"
 featured: false
+draft: true
 ---
 
 ### Situation

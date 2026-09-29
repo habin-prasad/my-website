@@ -2,7 +2,7 @@
 title: "Benchmarking Headless Browsers at Scale: PhantomJS vs. Xvfb Chrome Threads"
 description: "Evaluating memory usage, DOM rendering speeds, and IPC overhead when running thousands of automated UI browser sessions on headless Linux servers."
 pubDate: 2013-05-20
-draft: false
+draft: true
 tags: ["Headless Browsers", "Linux", "Performance", "Testing Strategy"]
 ---
 

@@ -2,7 +2,7 @@
 title: "Shift-Left Performance Testing: Enforcing Latency Budgets in CI/CD with k6"
 description: "How to automate load testing inside pull request workflows using k6 thresholds and Prometheus metrics to catch performance regressions early."
 pubDate: 2016-12-15
-draft: false
+draft: true
 tags: ["Performance", "k6", "CI/CD", "DevOps", "Benchmarking"]
 ---
 

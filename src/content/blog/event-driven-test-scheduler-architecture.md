@@ -2,7 +2,7 @@
 title: "Designing Event-Driven Test Schedulers for 100k Daily Executions"
 description: "Architecting a high-throughput, dynamic backpressure test execution engine using Node.js, Redis, and Kubernetes worker auto-scalers."
 pubDate: 2025-12-18
-draft: false
+draft: true
 tags: ["System Design", "Node.js", "Redis", "Kubernetes", "Infrastructure"]
 ---
 

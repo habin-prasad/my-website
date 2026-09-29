@@ -15,6 +15,7 @@ technologies:
   - "Linux cgroups"
   - "Bash"
 featured: false
+draft: true
 ---
 
 ### Situation

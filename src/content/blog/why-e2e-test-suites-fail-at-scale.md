@@ -2,7 +2,7 @@
 title: "Lessons from 13 Years of Test Infrastructure: Why E2E Suites Fail at Scale"
 description: "An architectural deep-dive into why traditional end-to-end testing strategies crumble past 10,000 daily runs and how cell-based isolation restores deterministic pipelines."
 pubDate: 2026-01-20
-draft: false
+draft: true
 tags: ["Architecture", "Infrastructure", "DevEx", "Testing Strategy"]
 ---
 

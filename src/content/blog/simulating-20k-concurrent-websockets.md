@@ -2,7 +2,7 @@
 title: "Simulating 20,000 Concurrent WebSocket Connections on Linux Kernels"
 description: "Tuning OS file descriptors, TCP socket memory buffers, and Epoll event loops to execute massive real-time WebSocket load tests."
 pubDate: 2013-12-10
-draft: false
+draft: true
 tags: ["Performance", "Linux", "WebSockets", "Networking"]
 ---
 

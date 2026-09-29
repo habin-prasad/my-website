@@ -2,7 +2,7 @@
 title: "Shift-Left Chaos: Injecting Failure into CI/CD Pipelines"
 description: "How to automate network latency, pod kills, and dependency degradation directly inside pull request validation pipelines before reaching production."
 pubDate: 2025-11-10
-draft: false
+draft: true
 tags: ["Chaos Engineering", "Kubernetes", "Reliability", "AWS"]
 ---
 

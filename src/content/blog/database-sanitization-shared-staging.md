@@ -2,7 +2,7 @@
 title: "Database Sanitization Strategies for High-Concurrency Staging Environments"
 description: "Patterns for managing relational database state mutations, transactional rollbacks, and foreign-key sanitization in shared integration pipelines."
 pubDate: 2013-11-05
-draft: false
+draft: true
 tags: ["Database", "PostgreSQL", "Testing Strategy", "Architecture"]
 ---
 

@@ -2,7 +2,7 @@
 title: "Architecting Ephemeral Staging Environments on Kubernetes with Helm and Dynamic Routing"
 description: "How to dynamically provision, route traffic to, and tear down per-PR preview environments using Kubernetes namespaces and Helm charts."
 pubDate: 2016-04-12
-draft: false
+draft: true
 tags: ["Kubernetes", "DevOps", "Infrastructure", "Helm", "CI/CD"]
 ---
 

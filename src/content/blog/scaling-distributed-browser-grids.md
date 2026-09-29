@@ -2,7 +2,7 @@
 title: "Scaling Elastic Distributed Browser Grids on Kubernetes Spot Instances"
 description: "Engineering auto-scaling browser node pools using KEDA queue metrics and spot instance termination handlers for fast, cost-effective browser testing."
 pubDate: 2016-06-25
-draft: false
+draft: true
 tags: ["Kubernetes", "Distributed Systems", "Cloud", "Performance"]
 ---
 

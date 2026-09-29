@@ -2,7 +2,7 @@
 title: "Building an Automated Flakiness Triage Pipeline with Stack Trace Clustering"
 description: "How to automatically group, classify, and quarantine non-deterministic test failures using TF-IDF vectorization and stack trace normalization."
 pubDate: 2015-11-10
-draft: false
+draft: true
 tags: ["CI/CD", "Machine Learning", "Testing Strategy", "DevOps"]
 ---
 

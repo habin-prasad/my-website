@@ -16,6 +16,7 @@ technologies:
   - "Redis"
   - "GraphQL"
 featured: true
+draft: true
 ---
 
 ### Situation

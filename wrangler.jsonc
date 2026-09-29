@@ -12,6 +12,7 @@
 		"enabled": true
 	},
 	"vars": {
-  		"TURSO_HTTP_URL": "https://portfolio-db-tesla163.aws-ap-south-1.turso.io"
+  		"TURSO_HTTP_URL": "https://portfolio-db-tesla163.aws-ap-south-1.turso.io",
+    	"UPSTASH_REDIS_REST_URL": "https://settling-giraffe-311649.upstash.io"
 	}
 }
