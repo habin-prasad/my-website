@@ -29,6 +29,7 @@
     "@upstash/ratelimit": "^2.1.0",
     "@upstash/redis": "^1.38.4",
     "astro": "^7.3.2",
+    "lodash": "4.18.1",
     "pagefind": "^1.5.2",
     "satori": "^0.33.4",
     "tailwind": "^4.0.0",
