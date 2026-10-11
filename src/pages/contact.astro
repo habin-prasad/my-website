@@ -7,38 +7,38 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
 <PageLayout title="Contact">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-  <div class="max-w-xl mx-auto">
+  <div class="mx-auto max-w-xl">
     <form id="contact-form" class="space-y-4">
       <div>
-        <label for="name" class="block text-sm font-medium mb-1">Name</label>
+        <label for="name" class="mb-1 block text-sm font-medium text-neutral-200">Name</label>
         <input 
           type="text" 
           id="name" 
           name="name" 
           required 
-          class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-base text-white focus:outline-none focus:border-accent" 
+          class="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-base text-white outline-none transition-colors focus:border-accent" 
         />
       </div>
 
       <div>
-        <label for="email" class="block text-sm font-medium mb-1">Email</label>
+        <label for="email" class="mb-1 block text-sm font-medium text-neutral-200">Email</label>
         <input 
           type="email" 
           id="email" 
           name="email" 
           required 
-          class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-base text-white focus:outline-none focus:border-accent" 
+          class="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-base text-white outline-none transition-colors focus:border-accent" 
         />
       </div>
 
       <div>
-        <label for="message" class="block text-sm font-medium mb-1">Message</label>
+        <label for="message" class="mb-1 block text-sm font-medium text-neutral-200">Message</label>
         <textarea 
           id="message" 
           name="message" 
           rows="4" 
           required 
-          class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-base text-white focus:outline-none focus:border-accent"
+          class="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-base text-white outline-none transition-colors focus:border-accent"
         ></textarea>
       </div>
 
@@ -47,7 +47,7 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
       <button 
         type="submit" 
         id="submit-btn" 
-        class="w-full sm:w-auto bg-white text-black hover:bg-neutral-200 font-semibold px-6 py-3 rounded-lg transition-all"
+        class="w-full rounded-lg bg-accent px-6 py-3 font-semibold text-black transition-colors hover:bg-accent-hover sm:w-auto disabled:cursor-not-allowed disabled:opacity-60"
       >
         Send Message
       </button>
@@ -56,9 +56,11 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
 </PageLayout>
 
 <script>
-  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
 
-  form?.addEventListener('submit', async (e) => {
+  if (form && !form.dataset.handlerAttached) {
+    form.dataset.handlerAttached = 'true';
+    form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries());
@@ -68,17 +70,22 @@ const siteKey = PUBLIC_TURNSTILE_SITE_KEY;
       return;
     }
 
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
+    const button = form.querySelector<HTMLButtonElement>('[type="submit"]');
+    if (button) button.disabled = true;
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Request failed');
       alert('Message sent successfully!');
       form.reset();
-    } else {
-      alert('Verification failed or server error occurred.');
+    } catch {
+      alert('Message could not be sent. Please try again later.');
+    } finally {
+      if (button) button.disabled = false;
     }
-  });
-</script>k
+    });
+  }
+</script>
