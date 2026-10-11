@@ -8,55 +8,18 @@ interface Props {
   containerWidth?: 'narrow' | 'wide';
 }
 
-const { 
-  title, 
-  subtitle, 
-  description, 
-  containerWidth = 'wide' 
-} = Astro.props;
+const { title, subtitle, description, containerWidth = 'wide' } = Astro.props;
+const widthClass = containerWidth === 'narrow' ? 'max-w-3xl' : 'max-w-7xl';
 ---
 
 <Base title={title} description={description}>
-  <div class={containerWidth === 'narrow' ? 'container-narrow' : 'container-wide'}>
-    <header class="page-header px-4 sm:px-0 pt-4 sm:pt-0">
-      <h1 class="page-title">{title}</h1>
-      {subtitle && <p class="page-subtitle">{subtitle}</p>}
+  <div class:list={['mx-auto w-full px-4 sm:px-6 lg:px-8', widthClass]}>
+    <header class="mb-6 pt-6 sm:mb-10 sm:pt-10">
+      <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">{title}</h1>
+      {subtitle && <p class="mt-2 max-w-3xl text-base leading-relaxed text-muted sm:text-lg">{subtitle}</p>}
     </header>
-
-    <main data-pagefind-body class="prose dark:prose-invert max-w-none px-4 sm:px-0 py-4 sm:py-6">
+    <div data-pagefind-body class="pb-10 sm:pb-14">
       <slot />
-    </main>
+    </div>
   </div>
 </Base>
-
-<style>
-  .page-header {
-    margin-bottom: 1.5rem;
-  }
-  @media (min-width: 640px) {
-    .page-header {
-      margin-bottom: 2.5rem;
-    }
-  }
-  .page-title {
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    margin: 0 0 0.5rem 0;
-  }
-  @media (min-width: 640px) {
-    .page-title {
-      font-size: 2.25rem;
-    }
-  }
-  .page-subtitle {
-    color: var(--muted);
-    font-size: 0.95rem;
-    margin: 0;
-  }
-  @media (min-width: 640px) {
-    .page-subtitle {
-      font-size: 1.1rem;
-    }
-  }
-</style>
