@@ -24,4 +24,5 @@ pnpm-debug.log*
 .idea/
 .vscode/
 public/pagefind
-/.wrangler
+.wrangler
+.kilo

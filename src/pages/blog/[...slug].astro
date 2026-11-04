@@ -29,7 +29,7 @@ const ogImageUrl = `/og/${slug}.png`;
 <Base title={post.data.title} description={post.data.description} image={ogImageUrl}>
   <ProgressBar />
 
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 md:py-12">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 md:py-12">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
       
       <!-- Article Content Body -->
@@ -79,7 +79,7 @@ const ogImageUrl = `/og/${slug}.png`;
         )}
 
         <!-- Main Content -->
-        <div class="p-5 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl bg-surface border border-white/10 prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent prose-pre:max-w-full prose-pre:overflow-x-auto text-sm sm:text-base">
+        <div class="post-content min-w-0 rounded-2xl border border-white/10 bg-surface p-5 text-sm sm:rounded-3xl sm:p-8 md:p-12 sm:text-base">
           <Content />
         </div>
 
@@ -94,6 +94,7 @@ const ogImageUrl = `/og/${slug}.png`;
           <TableOfContents headings={headings} />
         </div>
       </aside>
+
 
     </div>
   </div>

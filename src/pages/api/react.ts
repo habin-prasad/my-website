@@ -13,18 +13,17 @@ function getClientIP(request: Request, clientAddress?: string): string {
   );
 }
 
-// GET: Query Reaction Count (Public Cache Edge Layer)
 export const GET: APIRoute = async ({ request }) => {
   const url = new URL(request.url);
   const slug = url.searchParams.get('slug');
 
   if (!slug) {
-    return new Response(JSON.stringify({ error: 'Missing slug parameter' }), { 
+    return new Response(JSON.stringify({ error: 'Missing slug parameter' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     });
   }
-  
+
   try {
     const rows = await queryDb<{ count: number }>({
       sql: 'SELECT count FROM post_reactions WHERE slug = ?',
@@ -48,12 +47,23 @@ export const GET: APIRoute = async ({ request }) => {
   }
 };
 
-// POST: Increment Reaction Count (Rate Limited + Atomic Retaining UPSERT)
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   const clientIP = getClientIP(request, clientAddress);
-  
-  const { success, limit, remaining, reset } = await reactRateLimit.limit(`react_${clientIP}`);
-  
+
+  let success = true;
+  let limit = 10;
+  let remaining = 10;
+  let reset = Date.now() + 10_000;
+  try {
+    const r = await reactRateLimit.limit(`react_${clientIP}`);
+    success = r.success;
+    limit = r.limit;
+    remaining = r.remaining;
+    reset = r.reset;
+  } catch (e) {
+    console.error('Rate limiter failed, allowing request', e);
+  }
+
   const rateLimitHeaders = {
     'Content-Type': 'application/json',
     'X-RateLimit-Limit': limit.toString(),
@@ -85,11 +95,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       });
     }
 
-    // Atomic UPSERT + RETURNING clause (1 DB roundtrip over Turso HTTP pipeline)
     const rows = await queryDb<{ count: number }>({
       sql: `
-        INSERT INTO post_reactions (slug, count) 
-        VALUES (?, 1) 
+        INSERT INTO post_reactions (slug, count)
+        VALUES (?, 1)
         ON CONFLICT(slug) DO UPDATE SET count = count + 1
         RETURNING count
       `,

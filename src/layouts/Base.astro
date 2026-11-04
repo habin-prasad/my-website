@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import SearchTrigger from '../components/SearchTrigger.astro';
+import Nav from '../components/Nav.astro';
 import SearchModal from '../components/SearchModal.astro';
 import { ClientRouter } from 'astro:transitions';
 import TelemetryWidget from '../components/TelemetryWidget.astro';
@@ -84,28 +84,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
 
   <body class="min-h-full flex flex-col overflow-x-clip bg-[#09090b] text-[#fafafa]">
     
-    <!-- Sticky Navigation Header -->
-    <header class="sticky top-0 z-40 w-full border-b border-white/10 bg-[#09090b]/80 backdrop-blur-md transition-all">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <a href="/" class="text-base font-mono font-bold tracking-tight text-white hover:text-accent transition-colors">
-          habin<span class="text-accent font-mono">.quality</span>
-        </a>
-        
-        <!-- Desktop Nav Links -->
-        <div class="hidden md:flex items-center gap-6 text-sm font-mono">
-          <a href="/about" class={`transition-colors hover:text-accent ${currentPath.startsWith('/about') ? 'text-accent font-bold' : 'text-neutral-400'}`}>About</a>
-          <a href="/blog" class={`transition-colors hover:text-accent ${currentPath.startsWith('/blog') ? 'text-accent font-bold' : 'text-neutral-400'}`}>Blog</a>
-          <a href="/projects" class={`transition-colors hover:text-accent ${currentPath.startsWith('/projects') ? 'text-accent font-bold' : 'text-neutral-400'}`}>Projects</a>
-          
-          <SearchTrigger />
-        </div>
-
-        <!-- Mobile Quick Search Trigger -->
-        <div class="flex items-center md:hidden">
-          <SearchTrigger />
-        </div>
-      </div>
-    </header>
+    <Nav />
 
     <!-- Main Content Stream with Bottom Mobile Dock Padding -->
     <main class="flex-grow w-full pb-20 md:pb-10">
@@ -114,7 +93,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hp.com')
 
     <!-- Footer -->
     <footer class="border-t border-white/10 bg-[#09090b] text-neutral-500 text-xs font-mono py-8 mb-16 md:mb-0">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p>© 2026 Habin Prasad • gatedqass.in</p>
         <p class="text-[11px] text-neutral-600">Built with Astro & TailwindCSS</p>
       </div>

@@ -24,7 +24,8 @@ const projects = defineCollection({
       "Quality & Automation",
       "Engineering Leadership",
       "Distributed Systems",
-      "Developer Experience"
+      "Developer Experience",
+       "Backend Engineering & Distributed Systems Fundamentals"
     ]),
     role: z.string().optional(),
     period: z.string().optional(),
